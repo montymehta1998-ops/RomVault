@@ -87,8 +87,8 @@ export default function RomDetail() {
 
   const handleDownload = () => {
     if (game.downloadUrl) {
-      // Open download page in new tab
-      window.open(`/roms/${params.console}/${params.slug}/download`, '_blank');
+      // Open download page in same tab
+      window.location.href = `/roms/${params.console}/${params.slug}/download`;
     }
   };
 

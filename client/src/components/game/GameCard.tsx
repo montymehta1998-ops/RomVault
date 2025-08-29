@@ -33,7 +33,7 @@ export function GameCard({ game, showViewDetails = true }: GameCardProps) {
       className="game-card group bg-card border border-border rounded-lg overflow-hidden"
       data-testid={`card-game-${game.id}`}
     >
-      <Link to={`/roms/${game.categoryId}/${game.id}`}>
+      <Link to={`/roms/${game.console.toLowerCase()}/${game.id}`}>
         <img 
           src={game.image}
           alt={`${game.title} game cover`}
@@ -66,7 +66,7 @@ export function GameCard({ game, showViewDetails = true }: GameCardProps) {
           </div>
         )}
         {showViewDetails && (
-          <Link to={`/roms/${game.categoryId}/${game.id}`}>
+          <Link to={`/roms/${game.console.toLowerCase()}/${game.id}`}>
             <button 
               className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               data-testid={`button-view-details-${game.id}`}

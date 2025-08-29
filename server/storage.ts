@@ -64,25 +64,36 @@ export class MemStorage implements IStorage {
             const games = JSON.parse(fileData) as any[];
             
             // Convert each game to our format
-            const convertedGames: GameData[] = games.map((game, index) => ({
-              id: game.slug || `${consoleKey}-${index}`,
-              title: game.title,
-              platform: consoleName,
-              console: game.console || consoleKey.toUpperCase(),
-              category: game.category === 'N/A' ? 'Other' : (game.category || 'Other'),
-              categoryId: consoleKey,
-              image: game.image || '',
-              rating: game.rating === 'N/A' ? 4.0 : parseFloat(game.rating) || 4.0,
-              downloads: parseInt(game.downloads) || 0,
-              year: game.release_year === 'N/A' ? 2000 : parseInt(game.release_year) || 2000,
-              region: game.region || 'Unknown',
-              fileName: game.file_name,
-              size: game.size === 'unknown' ? 'Unknown' : game.size,
-              downloadUrl: game.download_url,
-              description: null,
-              longDescription: null,
-              reviewCount: Math.floor(Math.random() * 1000) + 100
-            }));
+            const convertedGames: GameData[] = games.map((game, index) => {
+              const downloads = parseInt(game.downloads) || 0;
+              // Generate rating based on downloads (more downloads = better rating)
+              let rating = 3.0; // Base rating
+              if (downloads > 500000) rating = 4.8 + Math.random() * 0.2;
+              else if (downloads > 300000) rating = 4.5 + Math.random() * 0.3;
+              else if (downloads > 150000) rating = 4.0 + Math.random() * 0.5;
+              else if (downloads > 50000) rating = 3.5 + Math.random() * 0.5;
+              else rating = 3.0 + Math.random() * 0.7;
+              
+              return {
+                id: game.slug || `${consoleKey}-${index}`,
+                title: game.title,
+                platform: consoleName,
+                console: game.console || consoleKey.toUpperCase(),
+                category: game.category === 'N/A' ? 'Other' : (game.category || 'Other'),
+                categoryId: consoleKey,
+                image: game.image || '',
+                rating: Math.round(rating * 10) / 10, // Round to 1 decimal
+                downloads: downloads,
+                year: game.release_year === 'N/A' ? 2000 : parseInt(game.release_year) || 2000,
+                region: game.region || 'Unknown',
+                fileName: game.file_name,
+                size: game.size === 'unknown' ? 'Unknown' : game.size,
+                downloadUrl: game.download_url,
+                description: null,
+                longDescription: null,
+                reviewCount: Math.floor(Math.random() * 1000) + 100
+              };
+            });
 
             allGames.push(...convertedGames);
             
@@ -219,10 +230,21 @@ export class MemStorage implements IStorage {
 
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
-    return data.games.find(game => 
+    // First try to match by slug (id)
+    let game = data.games.find(game => 
       game.console.toLowerCase() === console.toLowerCase() && 
       game.id === slug
     );
+    
+    // If not found, try to match by generated slug from filename
+    if (!game) {
+      game = data.games.find(game => 
+        game.console.toLowerCase() === console.toLowerCase() && 
+        this.createSlug(game.fileName) === slug
+      );
+    }
+    
+    return game;
   }
 
   async getConsoles(): Promise<string[]> {
