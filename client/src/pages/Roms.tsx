@@ -10,12 +10,24 @@ import type { GameData } from "@shared/schema";
 
 export default function Roms() {
   const [match, params] = useRoute("/roms/:console?");
+  const [searchMatch] = useRoute("/search");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"downloads" | "rating" | "year" | "title">("downloads");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedConsole, setSelectedConsole] = useState<string>(params?.console || "");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const limit = 20;
+
+  // Handle search from URL parameters
+  useEffect(() => {
+    if (searchMatch) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('q');
+      if (searchQuery) {
+        setSearch(searchQuery);
+      }
+    }
+  }, [searchMatch]);
 
   // Update selectedConsole when URL changes
   useEffect(() => {

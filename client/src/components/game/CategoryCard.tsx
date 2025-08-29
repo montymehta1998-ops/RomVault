@@ -8,7 +8,7 @@ interface CategoryCardProps {
 export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link 
-      to={`/category/${category.id}`}
+      to={`/roms/${category.id}`}
       className="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50 block"
       data-testid={`card-category-${category.id}`}
     >

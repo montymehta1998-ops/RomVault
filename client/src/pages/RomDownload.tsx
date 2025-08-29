@@ -105,14 +105,6 @@ export default function RomDownload() {
           </div>
         </div>
 
-        {/* Download Warning */}
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Important:</strong> Make sure you own a legal copy of this game before downloading. 
-            ROMs are provided for backup and preservation purposes only.
-          </AlertDescription>
-        </Alert>
 
         {/* Download Card */}
         <Card>
