@@ -16,7 +16,7 @@ export function Header() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <i className="fas fa-gamepad text-primary-foreground text-lg"></i>
             </div>
-            <span className="text-xl font-bold">RetroROMs</span>
+            <span className="text-xl font-bold">EmulatorGames</span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm">
             <Link 
@@ -27,25 +27,11 @@ export function Header() {
               Home
             </Link>
             <Link 
-              to="/categories" 
-              className={`transition-colors ${location === '/categories' ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
-              data-testid="link-categories"
-            >
-              Categories
-            </Link>
-            <Link 
               to="/roms" 
               className={`transition-colors ${location.startsWith('/roms') ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
               data-testid="link-roms"
             >
               ROMs
-            </Link>
-            <Link 
-              to="/popular" 
-              className={`transition-colors ${location === '/popular' ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
-              data-testid="link-popular"
-            >
-              Popular
             </Link>
           </nav>
         </div>
@@ -94,15 +80,6 @@ export function Header() {
                 Home
               </Link>
               <Link 
-                to="/categories" 
-                className={`p-2 rounded-lg transition-colors ${location === '/categories' ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-primary hover:bg-accent'}`}
-                data-testid="link-mobile-categories"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="fas fa-th-large mr-2"></i>
-                Categories
-              </Link>
-              <Link 
                 to="/roms" 
                 className={`p-2 rounded-lg transition-colors ${location.startsWith('/roms') ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-primary hover:bg-accent'}`}
                 data-testid="link-mobile-roms"
@@ -110,15 +87,6 @@ export function Header() {
               >
                 <i className="fas fa-gamepad mr-2"></i>
                 ROMs
-              </Link>
-              <Link 
-                to="/popular" 
-                className={`p-2 rounded-lg transition-colors ${location === '/popular' ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-primary hover:bg-accent'}`}
-                data-testid="link-mobile-popular"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="fas fa-fire mr-2"></i>
-                Popular
               </Link>
             </nav>
           </div>
