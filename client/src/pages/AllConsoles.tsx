@@ -10,6 +10,7 @@ interface Console {
   gameCount: number;
   image: string;
   popularity: number;
+  downloadCount?: number;
 }
 
 export default function AllConsoles() {
@@ -23,7 +24,7 @@ export default function AllConsoles() {
   });
 
   // Sort consoles by popularity (most downloaded games)
-  const sortedConsoles = romData?.categories?.sort((a: Console, b: Console) => b.gameCount - a.gameCount) || [];
+  const sortedConsoles = romData?.categories?.sort((a: Console, b: Console) => (b.downloadCount || b.gameCount) - (a.downloadCount || a.gameCount)) || [];
 
   return (
     <div className="container mx-auto px-4 py-8">

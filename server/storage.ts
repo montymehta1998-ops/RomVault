@@ -133,7 +133,7 @@ export class MemStorage implements IStorage {
           'zx_spectrum': 'ZX Spectrum'
         };
 
-        // Real download data mapping based on provided data
+        // Real download data mapping based on provided data (for sorting)
         const realDownloadCounts: Record<string, number> = {
           'psp': 21871621,
           'ps2': 7768966,
@@ -222,6 +222,95 @@ export class MemStorage implements IStorage {
           'sg_1000': 2561
         };
 
+        // Actual game counts from the provided data
+        const actualGameCounts: Record<string, number> = {
+          'psp': 787,
+          'ps2': 288,
+          'gba': 2046,
+          'nds': 2123,
+          '3ds': 117,
+          'wii': 91,
+          'gamecube': 239,
+          'ps3': 41,
+          'mame': 1234,
+          'n64': 877,
+          'snes': 1429,
+          'playstation': 339,
+          'nes': 1146,
+          'switch': 9,
+          'gameboy_color': 926,
+          'sega_genesis': 1026,
+          'zx_spectrum': 5847,
+          'sega_dreamcast': 114,
+          'amstrad_cpc': 4938,
+          'dos': 4110,
+          'amiga': 3185,
+          'xbox': 24,
+          'new_geo': 206,
+          'sega_cd': 103,
+          'gameboy': 574,
+          'atari_st': 2817,
+          'sharp': 2866,
+          'sega_saturn': 103,
+          'sega_naomi': 71,
+          'atari_2600': 440,
+          'nintendo_wii_u': 8,
+          'sega_game_gear': 326,
+          'sega_master_system': 368,
+          'bbc_micro': 1027,
+          'msx': 602,
+          'turbografx16': 103,
+          'capcom_play_system_1': 100,
+          'tandy_trs_80': 655,
+          'cd_i': 46,
+          'cps2': 100,
+          'sega_pico': 332,
+          'satellaview': 242,
+          'intellivision': 233,
+          'sega_32x': 55,
+          'colecovision': 302,
+          'xbox_one': 3,
+          'n_gage': 18,
+          'msx_2': 163,
+          'famicom': 100,
+          '3do': 17,
+          'scummvm': 16,
+          'gce_vectrex': 174,
+          'atari_lynx': 85,
+          'atari_5200': 93,
+          'neo_geo_pocket': 77,
+          'atari_jaguar': 56,
+          'cps3': 6,
+          'atari_7800': 59,
+          'playstation_vita': 2,
+          'playstation_4': 2,
+          'commodore_64_preservation': 96,
+          'wonderswan_color': 96,
+          'wonderswan': 123,
+          'acorn_archimedes': 155,
+          'sam_coupe': 139,
+          'pokemon_mini': 15,
+          'commodore_64_tapes': 100,
+          'virtual_boy': 17,
+          'apple_2': 103,
+          'pc_fx': 20,
+          'atari_8_bit': 18,
+          'trs_80_color_computer': 73,
+          'commodore_vic_20': 22,
+          'gamate': 58,
+          'tiger_game_com': 17,
+          'amstrad_gx4000': 19,
+          'magnavox_odissey_2': 23,
+          'videopac_g7400': 34,
+          'turbo_duo': 16,
+          'acorn_atom': 36,
+          'tatung_einstein': 51,
+          'action_max': 5,
+          'super_cassette_vision': 19,
+          'apple_2_gs': 16,
+          'sg_1000': 16
+        };
+
         // Process each console's ROM file
         for (const file of jsonFiles) {
           const consoleKey = file.replace('_roms.json', '');
@@ -268,14 +357,17 @@ export class MemStorage implements IStorage {
 
             allGames.push(...convertedGames);
             
-            // Create category for this console - use real download count if available
-            const realDownloadCount = realDownloadCounts[consoleKey] || convertedGames.length;
+            // Create category for this console - use actual game count for display, download count for sorting
+            const actualGameCount = actualGameCounts[consoleKey] || convertedGames.length;
+            const downloadCount = realDownloadCounts[consoleKey] || 0;
+            
             categories.push({
               id: consoleId,
               name: consoleName,
               description: `${consoleName} ROM collection`,
               image: convertedGames[0]?.image || '',
-              gameCount: realDownloadCount
+              gameCount: actualGameCount,
+              downloadCount: downloadCount // Add download count for sorting
             });
 
           } catch (error) {

@@ -84,6 +84,7 @@ export interface CategoryData {
   description: string;
   image: string;
   gameCount: number;
+  downloadCount?: number;
 }
 
 export interface RomData {

@@ -16,7 +16,7 @@ export function Header() {
   });
   
   // Get top 8 categories by download count (most popular)
-  const topCategories = categories?.sort((a, b) => b.gameCount - a.gameCount).slice(0, 8) || [];
+  const topCategories = categories?.sort((a, b) => (b.downloadCount || b.gameCount) - (a.downloadCount || a.gameCount)).slice(0, 8) || [];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -62,12 +62,11 @@ export function Header() {
                         <Link
                           key={category.id}
                           to={`/roms/${category.id}`}
-                          className="flex items-center justify-between px-3 py-2 text-sm rounded hover:bg-accent transition-colors"
+                          className="block px-3 py-2 text-sm rounded hover:bg-accent transition-colors"
                           data-testid={`link-category-${category.id}`}
                           onClick={() => setIsDropdownOpen(false)}
                         >
                           <span>{category.name}</span>
-                          <span className="text-xs text-muted-foreground">{category.gameCount}</span>
                         </Link>
                       ))}
                     </div>
