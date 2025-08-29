@@ -1,27 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   placeholder?: string;
   className?: string;
+  value?: string;
 }
 
 export function SearchBar({ 
   onSearch, 
   placeholder = "Search games...",
-  className = "w-64"
+  className = "w-64",
+  value = ""
 }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(value);
   const [, setLocation] = useLocation();
 
-  const handleSearch = (value: string) => {
+  // Update local state when value prop changes
+  useEffect(() => {
     setQuery(value);
+  }, [value]);
+
+  const handleSearch = (inputValue: string) => {
+    setQuery(inputValue);
     if (onSearch) {
-      onSearch(value);
-    } else if (value.trim()) {
+      onSearch(inputValue);
+    } else if (inputValue.trim()) {
       // Global search - navigate to search results
-      setLocation(`/search?q=${encodeURIComponent(value.trim())}`);
+      setLocation(`/search?q=${encodeURIComponent(inputValue.trim())}`);
     }
   };
 

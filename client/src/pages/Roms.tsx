@@ -83,10 +83,13 @@ export default function Roms() {
       {/* Page Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4" data-testid="text-roms-title">
-          ROMs Archive
+          {searchMatch && search ? `Search Results for "${search}"` : "ROMs Archive"}
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-testid="text-roms-description">
-          Browse our complete collection of retro gaming ROMs. Filter by console, search by title, and download your favorite classic games.
+          {searchMatch && search ? 
+            `Found ${romsData?.total || 0} games matching "${search}"` : 
+            "Browse our complete collection of retro gaming ROMs. Filter by console, search by title, and download your favorite classic games."
+          }
         </p>
       </div>
 
@@ -96,6 +99,7 @@ export default function Roms() {
           onSearch={setSearch}
           placeholder="Search ROMs..."
           className="w-full"
+          value={search}
         />
         
         <Select value={selectedConsole || "all-consoles"} onValueChange={(value) => setSelectedConsole(value === "all-consoles" ? "" : value)}>
