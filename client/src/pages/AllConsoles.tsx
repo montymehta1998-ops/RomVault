@@ -22,7 +22,7 @@ export default function AllConsoles() {
     },
   });
 
-  // Sort consoles by popularity (game count)
+  // Sort consoles by popularity (most downloaded games)
   const sortedConsoles = romData?.categories?.sort((a: Console, b: Console) => b.gameCount - a.gameCount) || [];
 
   return (
@@ -30,10 +30,10 @@ export default function AllConsoles() {
       {/* Page Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4" data-testid="text-page-title">
-          All ROMs Console
+          All Console
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-page-description">
-          Browse and download ROMs from all gaming consoles. Discover classic games from Nintendo, PlayStation, Sega, and many more platforms organized by popularity.
+          Browse and download ROMs from all gaming consoles. Discover classic games from Nintendo, PlayStation, Sega, and many more platforms organized by most downloaded games.
         </p>
       </div>
 

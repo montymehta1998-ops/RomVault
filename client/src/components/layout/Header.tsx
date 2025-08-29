@@ -15,7 +15,7 @@ export function Header() {
     queryKey: ["/api/categories"],
   });
   
-  // Get top 8 categories by game count
+  // Get top 8 categories by download count (most popular)
   const topCategories = categories?.sort((a, b) => b.gameCount - a.gameCount).slice(0, 8) || [];
 
   return (
@@ -36,40 +36,35 @@ export function Header() {
             >
               Home
             </Link>
-            <Link 
-              to="/all-consoles" 
-              className={`transition-colors ${location === '/all-consoles' ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
-              data-testid="link-all-consoles"
-            >
-              All Consoles
-            </Link>
             <div className="relative">
               <button
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
-                className={`transition-colors flex items-center ${location.startsWith('/category') ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
-                data-testid="button-categories"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={`transition-colors flex items-center ${location === '/all-consoles' || location.startsWith('/category') ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
+                data-testid="button-all-consoles"
               >
-                Categories
+                All Consoles
                 <i className="fas fa-chevron-down ml-1 text-xs"></i>
               </button>
               
-              {/* Categories Dropdown */}
+              {/* All Consoles Dropdown */}
               {isDropdownOpen && (
                 <div 
-                  className="absolute top-full left-0 mt-2 w-64 bg-background border border-border rounded-lg shadow-lg z-50"
+                  className="absolute top-full left-0 mt-2 w-64 bg-background border border-border rounded-lg shadow-lg z-[60]"
                   onMouseEnter={() => setIsDropdownOpen(true)}
                   onMouseLeave={() => setIsDropdownOpen(false)}
                 >
                   <div className="p-2">
-                    <div className="text-xs text-muted-foreground px-3 py-2 font-semibold">Top Categories</div>
+                    <div className="text-xs text-muted-foreground px-3 py-2 font-semibold">Top Consoles</div>
                     <div className="grid grid-cols-1 gap-1">
                       {topCategories.map((category) => (
                         <Link
                           key={category.id}
-                          to={`/category/${category.id}`}
+                          to={`/roms/${category.id}`}
                           className="flex items-center justify-between px-3 py-2 text-sm rounded hover:bg-accent transition-colors"
                           data-testid={`link-category-${category.id}`}
+                          onClick={() => setIsDropdownOpen(false)}
                         >
                           <span>{category.name}</span>
                           <span className="text-xs text-muted-foreground">{category.gameCount}</span>
@@ -80,9 +75,10 @@ export function Header() {
                       <Link
                         to="/all-consoles"
                         className="block px-3 py-2 text-sm text-primary hover:bg-accent rounded transition-colors"
-                        data-testid="link-view-all-categories"
+                        data-testid="link-view-all-consoles"
+                        onClick={() => setIsDropdownOpen(false)}
                       >
-                        View All Categories →
+                        View All Consoles →
                       </Link>
                     </div>
                   </div>
@@ -161,14 +157,14 @@ export function Header() {
                 ROMs
               </Link>
               
-              {/* Mobile Categories */}
+              {/* Mobile Top Consoles */}
               <div className="px-2 py-2">
-                <div className="text-xs text-muted-foreground font-semibold mb-2">Top Categories</div>
+                <div className="text-xs text-muted-foreground font-semibold mb-2">Top Consoles</div>
                 <div className="grid grid-cols-2 gap-1">
                   {topCategories.slice(0, 6).map((category) => (
                     <Link
                       key={category.id}
-                      to={`/category/${category.id}`}
+                      to={`/roms/${category.id}`}
                       className="block px-2 py-1 text-xs rounded hover:bg-accent transition-colors"
                       data-testid={`link-mobile-category-${category.id}`}
                       onClick={() => setIsMobileMenuOpen(false)}
