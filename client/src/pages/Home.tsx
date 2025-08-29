@@ -34,12 +34,12 @@ export default function Home() {
       {/* Hero Section - Full Width */}
       <section className="hero-gradient hero-fullwidth py-16 px-4 text-center">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4" data-testid="text-hero-title">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" data-testid="text-hero-title">
             <a href="https://www.emulator-games.net/" className="hover:text-blue-200 transition-colors">
               Emulator Games
             </a> | Download ROMs & Emulators For Free (2025)
           </h1>
-          <p className="text-xl md:text-2xl mb-8 opacity-80 max-w-4xl mx-auto font-medium" data-testid="text-hero-description">
+          <p className="text-lg md:text-xl mb-8 opacity-80 max-w-3xl mx-auto" data-testid="text-hero-description">
             Download 100% working ROMs and emulators only at Emulator-Games.net in 2025. Emulator Games offer Free classic games to play offline.
             Download ROMs PS3, GBA, PS1, SNES, N64, PS2, and more. Enjoy retro gaming easily at Emulator Games.
           </p>
