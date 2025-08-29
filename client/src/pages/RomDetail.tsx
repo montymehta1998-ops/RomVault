@@ -95,27 +95,15 @@ export default function RomDetail() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* ROM Header */}
-      <div className="flex items-center space-x-4 mb-8">
-        <Link to="/roms">
-          <Button 
-            variant="secondary" 
-            size="sm"
-            className="p-2"
-            data-testid="button-back-roms"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-4xl font-bold" data-testid="text-rom-title">
-            {game.title}
-          </h1>
-          <p className="text-muted-foreground mt-2" data-testid="text-rom-meta">
-            <span>{game.platform}</span> • 
-            <span> {game.year}</span> • 
-            <span> {game.region}</span>
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold" data-testid="text-rom-title">
+          {game.title}
+        </h1>
+        <p className="text-muted-foreground mt-2" data-testid="text-rom-meta">
+          <span>{game.platform}</span> • 
+          <span> {game.year}</span> • 
+          <span> {game.region}</span>
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
