@@ -22,20 +22,97 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private romData: RomData | null = null;
-  private dataPath: string;
+  private dataDir: string;
 
   constructor() {
-    this.dataPath = path.resolve(process.cwd(), "data", "games.json");
+    this.dataDir = path.resolve(process.cwd(), "data");
   }
 
   private async loadData(): Promise<RomData> {
     if (!this.romData) {
       try {
-        const data = await fs.readFile(this.dataPath, "utf-8");
-        this.romData = JSON.parse(data);
+        // Get all JSON files in data directory
+        const files = await fs.readdir(this.dataDir);
+        const jsonFiles = files.filter(file => file.endsWith('_roms.json'));
+        
+        let allGames: GameData[] = [];
+        const categories: CategoryData[] = [];
+        const consoleMap = new Map<string, string>();
+
+        // Console name mappings
+        const consoleNames: Record<string, string> = {
+          '3ds': '3DS',
+          'gba': 'Game Boy Advance',
+          'psp': 'PlayStation Portable',
+          'nds': 'Nintendo DS',
+          'n64': 'Nintendo 64',
+          'ps2': 'PlayStation 2',
+          'ps3': 'PlayStation 3',
+          'wii': 'Nintendo Wii',
+          'gamecube': 'GameCube',
+          'mame': 'Arcade (MAME)'
+        };
+
+        // Process each console's ROM file
+        for (const file of jsonFiles) {
+          const consoleKey = file.replace('_roms.json', '');
+          const consoleName = consoleNames[consoleKey] || consoleKey.toUpperCase();
+          const filePath = path.join(this.dataDir, file);
+          
+          try {
+            const fileData = await fs.readFile(filePath, "utf-8");
+            const games = JSON.parse(fileData) as any[];
+            
+            // Convert each game to our format
+            const convertedGames: GameData[] = games.map((game, index) => ({
+              id: game.slug || `${consoleKey}-${index}`,
+              title: game.title,
+              platform: consoleName,
+              console: game.console || consoleKey.toUpperCase(),
+              category: game.category === 'N/A' ? 'Other' : (game.category || 'Other'),
+              categoryId: consoleKey,
+              image: game.image || '',
+              rating: game.rating === 'N/A' ? 4.0 : parseFloat(game.rating) || 4.0,
+              downloads: parseInt(game.downloads) || 0,
+              year: game.release_year === 'N/A' ? 2000 : parseInt(game.release_year) || 2000,
+              region: game.region || 'Unknown',
+              fileName: game.file_name,
+              size: game.size === 'unknown' ? 'Unknown' : game.size,
+              downloadUrl: game.download_url,
+              description: null,
+              longDescription: null,
+              reviewCount: Math.floor(Math.random() * 1000) + 100
+            }));
+
+            allGames.push(...convertedGames);
+            
+            // Create category for this console
+            categories.push({
+              id: consoleKey,
+              name: consoleName,
+              description: `${consoleName} ROM collection`,
+              image: convertedGames[0]?.image || '',
+              gameCount: convertedGames.length
+            });
+
+          } catch (error) {
+            console.error(`Failed to load ${file}:`, error);
+          }
+        }
+
+        this.romData = {
+          categories,
+          games: allGames,
+          stats: {
+            totalGames: allGames.length,
+            totalCategories: categories.length,
+            totalDownloads: Math.floor(allGames.reduce((sum, game) => sum + game.downloads, 0) / 1000) + "K",
+            activeUsers: Math.floor(Math.random() * 50000 + 10000).toLocaleString()
+          }
+        };
       } catch (error) {
         console.error("Failed to load ROM data:", error);
-        // Return empty data structure if file doesn't exist
+        // Return empty data structure if files don't exist
         this.romData = {
           categories: [],
           games: [],
@@ -144,7 +221,7 @@ export class MemStorage implements IStorage {
     const data = await this.loadData();
     return data.games.find(game => 
       game.console.toLowerCase() === console.toLowerCase() && 
-      this.createSlug(game.fileName) === slug
+      game.id === slug
     );
   }
 
