@@ -19,17 +19,20 @@ export default function Roms() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const limit = 20;
 
-  // Handle search from URL parameters
+  // Handle search from URL parameters - run on every render to catch URL changes
   useEffect(() => {
     if (searchMatch) {
       const urlParams = new URLSearchParams(window.location.search);
       const searchQuery = urlParams.get('q') || '';
-      setSearch(searchQuery);
-      setCurrentPage(1); // Reset page when search changes
-    } else {
+      console.log('Setting search from URL:', searchQuery, 'current search state:', search);
+      if (searchQuery !== search) {
+        setSearch(searchQuery);
+        setCurrentPage(1); // Reset page when search changes
+      }
+    } else if (search !== '') {
       setSearch(''); // Clear search when not on search page
     }
-  }, [searchMatch, location]);
+  }); // Remove dependencies to run on every render
 
   // Update selectedConsole when URL changes
   useEffect(() => {
@@ -52,6 +55,7 @@ export default function Roms() {
       params.append('page', currentPage.toString());
       params.append('limit', limit.toString());
       
+      console.log('API call with search:', search, 'URL:', `/api/roms?${params.toString()}`);
       const response = await fetch(`/api/roms?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch ROMs');
       return response.json();
