@@ -21,13 +21,19 @@ export default function Roms() {
   });
 
   const { data: romsData, isLoading } = useQuery<{ games: GameData[]; total: number }>({
-    queryKey: ["/api/roms", { 
-      console: selectedConsole || undefined,
-      search: search || undefined, 
-      sortBy, 
-      page: currentPage, 
-      limit 
-    }],
+    queryKey: ["/api/roms", selectedConsole, search, sortBy, currentPage, limit],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedConsole) params.append('console', selectedConsole);
+      if (search) params.append('search', search);
+      params.append('sortBy', sortBy);
+      params.append('page', currentPage.toString());
+      params.append('limit', limit.toString());
+      
+      const response = await fetch(`/api/roms?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch ROMs');
+      return response.json();
+    },
   });
 
   // Reset page when filters change

@@ -12,6 +12,11 @@ export default function RomDetail() {
   const { data: game, isLoading } = useQuery<GameData>({
     queryKey: ["/api/roms", params?.console, params?.slug],
     enabled: !!(params?.console && params?.slug),
+    queryFn: async () => {
+      const response = await fetch(`/api/roms/${params?.console}/${params?.slug}`);
+      if (!response.ok) throw new Error('Failed to fetch ROM');
+      return response.json();
+    },
   });
 
   if (!match || !params?.console || !params?.slug) {
