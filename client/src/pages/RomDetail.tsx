@@ -4,6 +4,14 @@ import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import type { GameData } from "@shared/schema";
 
 export default function RomDetail() {
@@ -92,18 +100,94 @@ export default function RomDetail() {
     }
   };
 
+  const getGameDescription = (game: GameData): string => {
+    // If we have a description, use it
+    if (game.description) {
+      return game.description;
+    }
+
+    // Generate a description based on the game's properties
+    const platformDescriptions: Record<string, string> = {
+      'Nintendo Entertainment System': 'classic 8-bit Nintendo console',
+      'Super Nintendo Entertainment System': 'legendary 16-bit Super Nintendo system',
+      'Game Boy': 'iconic portable handheld gaming device',
+      'Game Boy Color': 'enhanced portable color handheld system',
+      'Game Boy Advance': 'advanced 32-bit portable gaming console',
+      'Nintendo 64': 'revolutionary 64-bit 3D gaming platform',
+      'GameCube': 'compact cube-shaped Nintendo console',
+      'Nintendo DS': 'dual-screen portable gaming system',
+      'Nintendo Wii': 'motion-controlled gaming console',
+      'PlayStation': 'groundbreaking 32-bit gaming console',
+      'PlayStation 2': 'best-selling video game console of all time',
+      'PlayStation Portable': 'advanced portable multimedia device',
+      'Sega Genesis': 'classic 16-bit Sega gaming console',
+      'Sega Master System': 'classic 8-bit Sega gaming system',
+      'Sega Game Gear': 'portable color handheld gaming device',
+      'Atari 2600': 'legendary vintage gaming console',
+      'Arcade (MAME)': 'classic arcade gaming experience'
+    };
+
+    const categoryDescriptions: Record<string, string> = {
+      'Action': 'fast-paced action gameplay',
+      'Adventure': 'immersive adventure experience',
+      'Puzzle': 'challenging puzzle mechanics',
+      'RPG': 'rich role-playing adventure',
+      'Sports': 'exciting sports simulation',
+      'Racing': 'thrilling racing action',
+      'Fighting': 'intense combat gameplay',
+      'Shooter': 'action-packed shooting gameplay',
+      'Platform': 'classic platforming adventure',
+      'Other': 'unique gaming experience'
+    };
+
+    const platformDesc = platformDescriptions[game.platform] || 'retro gaming platform';
+    const categoryDesc = categoryDescriptions[game.category] || 'gaming experience';
+    
+    const baseDescription = `Experience "${game.title}" on the ${platformDesc}. This ${game.category.toLowerCase()} title offers ${categoryDesc} that defined gaming in ${game.year}.`;
+    
+    const additionalInfo = game.downloads > 100000 
+      ? ` With over ${(game.downloads / 1000).toFixed(0)}K downloads, this is a highly popular classic that continues to captivate retro gaming enthusiasts.`
+      : ` Join thousands of retro gaming fans who have already discovered this ${game.region} classic.`;
+    
+    const compatibilityInfo = ` The ROM file is compatible with ${game.platform} emulators and provides an authentic gaming experience true to the original ${game.year} release.`;
+    
+    return baseDescription + additionalInfo + compatibilityInfo;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/" data-testid="link-breadcrumb-home">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/roms" data-testid="link-breadcrumb-roms">ROMs</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to={`/roms/${game.categoryId}-roms`} data-testid="link-breadcrumb-platform">{game.platform}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage data-testid="text-breadcrumb-current">{game.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* ROM Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold" data-testid="text-rom-title">
           {game.title}
         </h1>
-        <p className="text-muted-foreground mt-2" data-testid="text-rom-meta">
-          <span>{game.platform}</span> • 
-          <span> {game.year}</span> • 
-          <span> {game.region}</span>
-        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -212,25 +296,27 @@ export default function RomDetail() {
             </Card>
           )}
 
-          {/* Technical Specifications */}
+          {/* Game Information */}
           <Card>
             <CardHeader>
-              <CardTitle data-testid="text-technical-specs">Technical Specifications</CardTitle>
+              <CardTitle data-testid="text-game-info">Game Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="space-y-3">
                   <div>
                     <div className="text-sm text-muted-foreground">Platform</div>
                     <div className="font-semibold" data-testid="text-spec-platform">{game.platform}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-muted-foreground">Console</div>
-                    <div className="font-semibold" data-testid="text-spec-console">{game.console}</div>
-                  </div>
-                  <div>
                     <div className="text-sm text-muted-foreground">Category</div>
                     <div className="font-semibold" data-testid="text-spec-category">{game.category}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">File Format</div>
+                    <div className="font-semibold" data-testid="text-spec-format">
+                      {game.fileName.split('.').pop()?.toUpperCase()}
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -243,11 +329,17 @@ export default function RomDetail() {
                     <div className="font-semibold" data-testid="text-spec-year">{game.year}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-muted-foreground">File Format</div>
-                    <div className="font-semibold" data-testid="text-spec-format">
-                      {game.fileName.split('.').pop()?.toUpperCase()}
-                    </div>
+                    <div className="text-sm text-muted-foreground">Total Downloads</div>
+                    <div className="font-semibold" data-testid="text-spec-downloads">{game.downloads.toLocaleString()}</div>
                   </div>
+                </div>
+              </div>
+              
+              {/* Game Description */}
+              <div className="mt-6 pt-6 border-t">
+                <h4 className="text-lg font-semibold mb-3" data-testid="text-game-description-title">About This Game</h4>
+                <div className="text-muted-foreground leading-relaxed" data-testid="text-game-description">
+                  {getGameDescription(game)}
                 </div>
               </div>
             </CardContent>
