@@ -22,13 +22,19 @@ export default function Category() {
   });
 
   const { data: gamesData, isLoading } = useQuery<{ games: GameData[]; total: number }>({
-    queryKey: ["/api/games", { 
-      categoryId: params?.id, 
-      search: search || undefined, 
-      sortBy, 
-      page: currentPage, 
-      limit 
-    }],
+    queryKey: ["/api/games", params?.id, search, sortBy, currentPage, limit],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams();
+      if (params?.id) queryParams.append('categoryId', params.id);
+      if (search) queryParams.append('search', search);
+      queryParams.append('sortBy', sortBy);
+      queryParams.append('page', currentPage.toString());
+      queryParams.append('limit', limit.toString());
+      
+      const response = await fetch(`/api/games?${queryParams.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch games');
+      return response.json();
+    },
     enabled: !!params?.id,
   });
 

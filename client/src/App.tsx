@@ -22,6 +22,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/category/:id" component={Category} />
           <Route path="/roms" component={Roms} />
+          <Route path="/roms/:console" component={Roms} />
           <Route path="/roms/:console/:slug/download" component={RomDownload} />
           <Route path="/roms/:console/:slug" component={RomDetail} />
           <Route component={NotFound} />

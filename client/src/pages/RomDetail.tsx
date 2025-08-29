@@ -202,27 +202,6 @@ export default function RomDetail() {
                 </div>
               </div>
               
-              {/* Rating Distribution */}
-              <div className="space-y-2">
-                {[5, 4, 3, 2, 1].map(star => {
-                  const percentage = star === Math.floor(game.rating) ? 
-                    (game.rating >= 4.5 ? 78 : 65) : 
-                    (star > game.rating ? Math.max(0, 15 - (star - game.rating) * 10) : 5);
-                  
-                  return (
-                    <div key={star} className="flex items-center space-x-2">
-                      <span className="text-sm w-8">{star}★</span>
-                      <div className="flex-1 bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full" 
-                          style={{ width: `${percentage}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm text-muted-foreground w-12">{percentage}%</span>
-                    </div>
-                  );
-                })}
-              </div>
             </CardContent>
           </Card>
 

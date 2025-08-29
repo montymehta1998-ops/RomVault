@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import { GameCard } from "@/components/game/GameCard";
 import { SearchBar } from "@/components/game/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { GameData } from "@shared/schema";
 
 export default function Roms() {
+  const [match, params] = useRoute("/roms/:console?");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"downloads" | "rating" | "year" | "title">("downloads");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedConsole, setSelectedConsole] = useState<string>("");
+  const [selectedConsole, setSelectedConsole] = useState<string>(params?.console || "");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const limit = 20;
+
+  // Update selectedConsole when URL changes
+  useEffect(() => {
+    if (params?.console) {
+      setSelectedConsole(params.console.toUpperCase());
+    }
+  }, [params?.console]);
 
   const { data: consoles } = useQuery<string[]>({
     queryKey: ["/api/consoles"],
