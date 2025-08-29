@@ -1,0 +1,514 @@
+PSP ROMs
+ 787
+
+ 21871621
+
+Sony PlayStation 2 Emulators
+PS2 ROMs
+ 288
+
+ 7768966
+
+GameBoy Advance Emulators
+GBA ROMs
+ 2046
+
+ 6930074
+
+Nintendo DS Emulators
+NDS ROMs
+ 2123
+
+ 3811847
+
+Nintendo 3DS Emulators
+3DS ROMs
+ 117
+
+ 3199342
+
+Nintendo Wii Emulators
+Wii ROMs
+ 91
+
+ 2320853
+
+Nintendo GameCube Emulators
+GameCube ROMs
+ 239
+
+ 2217746
+
+Sony PlayStation 3 Emulators
+PS3 ROMs
+ 41
+
+ 2049626
+
+M.A.M.E. - Multiple Arcade Machine Emulator Emulators
+MAME ROMs
+ 1234
+
+ 1830746
+
+Nintendo 64 Emulators
+N64 ROMs
+ 877
+
+ 1625508
+
+Super Nintendo Emulators
+SNES ROMs
+ 1429
+
+ 1533725
+
+Sony PSX/PlayStation 1 Emulators
+PSX ROMs
+ 339
+
+ 1328110
+
+Nintendo Entertainment System Emulators
+NES ROMs
+ 1146
+
+ 1024524
+
+Nintendo Switch Emulators
+Switch ROMs
+ 9
+
+ 766031
+
+GameBoy Color Emulators
+GBC ROMs
+ 926
+
+ 609353
+
+Sega Genesis Emulators
+Megadrive ROMs
+ 1026
+
+ 472446
+
+ZX Spectrum Emulators
+ZX Spectrum ROMs
+ 5847
+
+ 386624
+
+Sega Dreamcast Emulators
+Dreamcast ROMs
+ 114
+
+ 298690
+
+Amstrad CPC(Colour Personal Computer) Emulators
+Amstrad CPC ROMs
+ 4938
+
+ 290142
+
+Dos Emulators
+Dos ROMs
+ 4110
+
+ 289487
+
+Amiga Emulators
+Amiga ROMs
+ 3185
+
+ 268800
+
+Microsoft Xbox Emulators
+Xbox ROMs
+ 24
+
+ 253893
+
+Neo-Geo Emulators
+Neo Geo ROMs
+ 206
+
+ 213207
+
+Sega CD Emulators
+Sega CD ROMs
+ 103
+
+ 209624
+
+Nintendo GameBoy Emulators
+GB ROMs
+ 574
+
+ 197872
+
+Atari ST Emulators
+Atari ST ROMs
+ 2817
+
+ 186536
+
+Sharp X68000 Emulators
+X68000 ROMs
+ 2866
+
+ 182908
+
+Sega Saturn Emulators
+Sega Saturn ROMs
+ 103
+
+ 112919
+
+Sega NAOMI Emulators
+NAOMI ROMs
+ 71
+
+ 93595
+
+Atari 2600 Emulators
+Atari 2600 ROMs
+ 440
+
+ 82556
+
+Nintendo Wii U Emulators
+Wii U ROMs
+ 8
+
+ 81622
+
+Sega Game Gear Emulators
+Game Gear ROMs
+ 326
+
+ 70312
+
+Sega Master System Emulators
+Master System ROMs
+ 368
+
+ 65278
+
+Acorn BBC Micro Model B Emulators
+BBC Micro ROMs
+ 1027
+
+ 57832
+
+MSX Emulators
+MSX ROMs
+ 602
+
+ 53251
+
+PC Engine - TurboGrafx16 Emulators
+TurboGrafx16 ROMs
+ 103
+
+ 46977
+
+Capcom Play System 1 Emulators
+CPS 1 ROMs
+ 100
+
+ 45741
+
+Tandy TRS-80 Micro Computer System (Model I) Emulators
+Tandy TRS-80 ROMs
+ 655
+
+ 37969
+
+Philips CD-i Emulators
+CD-i ROMs
+ 46
+
+ 33824
+
+Capcom Play System 2 Emulators
+CPS 2 ROMs
+ 100
+
+ 32492
+
+Robotron Z1013(Mikrorechner­bausatz) Emulators
+Robotron Z1013 ROMs
+ 441
+
+ 26297
+
+Kids Computer Pico Emulators
+Sega Pico ROMs
+ 332
+
+ 25339
+
+Nintendo Satellaview Emulators
+Satellaview ROMs
+ 242
+
+ 24178
+
+Mattel Electronics Intellivision Emulators
+Intellivision ROMs
+ 233
+
+ 24147
+
+Sega 32X Emulators
+32X ROMs
+ 55
+
+ 23920
+
+CBS ColecoVision Emulators
+ColecoVision ROMs
+ 302
+
+ 23815
+
+Microsoft Xbox One Emulators
+Xbox 360 ROMs
+ 3
+
+ 22087
+
+Nokia N-gage Emulators
+N-gage ROMs
+ 18
+
+ 18836
+
+MSX 2 Emulators
+MSX2 ROMs
+ 163
+
+ 18370
+
+Family Computer System Emulators
+Famicom ROMs
+ 100
+
+ 18100
+
+3DO Interactive Multiplayer Emulators
+3DO ROMs
+ 17
+
+ 17572
+
+Script Creation Utility for Maniac Mansion Virtual Machine (ScummVM) Emulators
+ScummVM ROMs
+ 16
+
+ 17257
+
+GCE Vectrex Emulators
+Vectrex ROMs
+ 174
+
+ 15932
+
+Atari Lynx Emulators
+Atari Lynx ROMs
+ 85
+
+ 15555
+
+Atari 5200 Emulators
+Atari 5200 ROMs
+ 93
+
+ 15454
+
+Neo-Geo Pocket Emulators
+Neo Geo Pocket ROMs
+ 77
+
+ 15285
+
+Atari Jaguar Emulators
+Atari Jaguar ROMs
+ 56
+
+ 14095
+
+Capcom Play System 3 Emulators
+CPS 3 ROMs
+ 6
+
+ 13645
+
+Atari 7800 Emulators
+Atari 7800 ROMs
+ 59
+
+ 13238
+
+PlayStation Vita Emulators
+PS Vita ROMs
+ 2
+
+ 12979
+
+PlayStation 4 Emulators
+PS 4 ROMs
+ 2
+
+ 12946
+
+Commodore 64 Preservation Project Emulators
+C64 Preservation ROMs
+ 96
+
+ 11773
+
+Bandai Wonderswan Color Emulators
+Wonderswan Color ROMs
+ 96
+
+ 11475
+
+Bandai Wonderswan Emulators
+Wonderswan ROMs
+ 123
+
+ 11461
+
+Acorn Archimedes Emulators
+Acorn Archimedes ROMs
+ 155
+
+ 11087
+
+MGT SAM Coupe Emulators
+SAM Coupé ROMs
+ 139
+
+ 10189
+
+Nintendo Pokemon Mini Emulators
+Pokemon Mini ROMs
+ 15
+
+ 9670
+
+Commodore 64 Tapes Emulators
+C64 Tapes ROMs
+ 100
+
+ 9508
+
+Nintendo Virtual Boy Emulators
+Virtual Boy ROMs
+ 17
+
+ 9120
+
+Apple 2 Emulators
+Apple II ROMs
+ 103
+
+ 8971
+
+PC-FX Emulators
+PC-FX ROMs
+ 20
+
+ 7319
+
+Atari 400 and 800 Emulators
+Atari 800 ROMs
+ 18
+
+ 5986
+
+TRS-80 Color Computer (CoCo) Emulators
+Tandy Color Computer ROMs
+ 73
+
+ 5401
+
+Commodore VIC-20(VIC-1001) Emulators
+Commodore VIC-20 ROMs
+ 22
+
+ 5092
+
+Bit Corporation Gamate Emulators
+Gamate ROMs
+ 58
+
+ 4868
+
+Tiger Game.com Emulators
+Game com ROMs
+ 17
+
+ 4851
+
+Amstrad GX4000 Emulators
+GX4000 ROMs
+ 19
+
+ 4658
+
+Magnavox Odyssey 2 Emulators
+Magnavox Odyssey 2 ROMs
+ 23
+
+ 4591
+
+Philips Videopac+ G7400 Emulators
+Philips Videopac+ G7400 ROMs
+ 34
+
+ 4156
+
+PC Engine Duo - Turbo Duo Emulators
+Turbo Duo ROMs
+ 16
+
+ 3990
+
+Acorn Atom Emulators
+Acorn Atom ROMs
+ 36
+
+ 3509
+
+Tatung Einstein TC-01 Emulators
+Tatung Einstein ROMs
+ 51
+
+ 3385
+
+WoW Action Max Emulators
+Action Max ROMs
+ 5
+
+ 2995
+
+Epoch Super Cassette Vision Emulators
+Super Cassette Vision ROMs
+ 19
+
+ 2808
+
+Apple 2 GS Emulators
+Apple II GS ROMs
+ 16
+
+ 2764
+
+Sega SG-1000 Emulators
+SG-1000 ROMs
+ 16
+
+ 2561

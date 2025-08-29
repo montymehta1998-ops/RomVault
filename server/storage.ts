@@ -133,6 +133,95 @@ export class MemStorage implements IStorage {
           'zx_spectrum': 'ZX Spectrum'
         };
 
+        // Real download data mapping based on provided data
+        const realDownloadCounts: Record<string, number> = {
+          'psp': 21871621,
+          'ps2': 7768966,
+          'gba': 6930074,
+          'nds': 3811847,
+          '3ds': 3199342,
+          'wii': 2320853,
+          'gamecube': 2217746,
+          'ps3': 2049626,
+          'mame': 1830746,
+          'n64': 1625508,
+          'snes': 1533725,
+          'playstation': 1328110,
+          'nes': 1024524,
+          'switch': 766031,
+          'gameboy_color': 609353,
+          'sega_genesis': 472446,
+          'zx_spectrum': 386624,
+          'sega_dreamcast': 298690,
+          'amstrad_cpc': 290142,
+          'dos': 289487,
+          'amiga': 268800,
+          'xbox': 253893,
+          'new_geo': 213207,
+          'sega_cd': 209624,
+          'gameboy': 197872,
+          'atari_st': 186536,
+          'sharp': 182908,
+          'sega_saturn': 112919,
+          'sega_naomi': 93595,
+          'atari_2600': 82556,
+          'nintendo_wii_u': 81622,
+          'sega_game_gear': 70312,
+          'sega_master_system': 65278,
+          'bbc_micro': 57832,
+          'msx': 53251,
+          'turbografx16': 46977,
+          'capcom_play_system_1': 45741,
+          'tandy_trs_80': 37969,
+          'cd_i': 33824,
+          'cps2': 32492,
+          'sega_pico': 25339,
+          'satellaview': 24178,
+          'intellivision': 24147,
+          'sega_32x': 23920,
+          'colecovision': 23815,
+          'xbox_one': 22087,
+          'n_gage': 18836,
+          'msx_2': 18370,
+          'famicom': 18100,
+          '3do': 17572,
+          'scummvm': 17257,
+          'gce_vectrex': 15932,
+          'atari_lynx': 15555,
+          'atari_5200': 15454,
+          'neo_geo_pocket': 15285,
+          'atari_jaguar': 14095,
+          'cps3': 13645,
+          'atari_7800': 13238,
+          'playstation_vita': 12979,
+          'playstation_4': 12946,
+          'commodore_64_preservation': 11773,
+          'wonderswan_color': 11475,
+          'wonderswan': 11461,
+          'acorn_archimedes': 11087,
+          'sam_coupe': 10189,
+          'pokemon_mini': 9670,
+          'commodore_64_tapes': 9508,
+          'virtual_boy': 9120,
+          'apple_2': 8971,
+          'pc_fx': 7319,
+          'atari_8_bit': 5986,
+          'trs_80_color_computer': 5401,
+          'commodore_vic_20': 5092,
+          'gamate': 4868,
+          'tiger_game_com': 4851,
+          'amstrad_gx4000': 4658,
+          'magnavox_odissey_2': 4591,
+          'videopac_g7400': 4156,
+          'turbo_duo': 3990,
+          'acorn_atom': 3509,
+          'tatung_einstein': 3385,
+          'action_max': 2995,
+          'super_cassette_vision': 2808,
+          'apple_2_gs': 2764,
+          'sg_1000': 2561
+        };
+
         // Process each console's ROM file
         for (const file of jsonFiles) {
           const consoleKey = file.replace('_roms.json', '');
@@ -179,13 +268,14 @@ export class MemStorage implements IStorage {
 
             allGames.push(...convertedGames);
             
-            // Create category for this console
+            // Create category for this console - use real download count if available
+            const realDownloadCount = realDownloadCounts[consoleKey] || convertedGames.length;
             categories.push({
               id: consoleId,
               name: consoleName,
               description: `${consoleName} ROM collection`,
               image: convertedGames[0]?.image || '',
-              gameCount: convertedGames.length
+              gameCount: realDownloadCount
             });
 
           } catch (error) {
