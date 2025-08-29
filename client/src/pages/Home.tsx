@@ -26,18 +26,7 @@ export default function Home() {
     }
   }, []);
 
-  // Don't show loading for the entire page - show hero immediately
-
-  if (!romData) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">No ROM data available</h1>
-          <p className="text-muted-foreground">Please check if the games.json file exists and contains valid data.</p>
-        </div>
-      </div>
-    );
-  }
+  // Show hero section immediately, handle data loading gracefully
 
   return (
     <div className="space-y-12">
@@ -88,41 +77,56 @@ export default function Home() {
             Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="loading-skeleton rounded-lg h-80" />
             ))
-          ) : (
-            popularGames?.slice(0, 10).map((game, index) => (
+          ) : popularGames && popularGames.length > 0 ? (
+            popularGames.slice(0, 10).map((game, index) => (
               <GameCard key={`${game.id}-${game.platform}-${index}`} game={game} />
             ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-muted-foreground">Loading popular games...</p>
+            </div>
           )}
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="bg-card border border-border rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-total-games">
-            {romData.stats.totalGames.toLocaleString()}
+      {romData ? (
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-total-games">
+              {romData.stats.totalGames.toLocaleString()}
+            </div>
+            <div className="text-foreground/80">Total Games</div>
           </div>
-          <div className="text-foreground/80">Total Games</div>
-        </div>
-        <div className="bg-card border border-border rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-platforms">
-            {romData.stats.totalCategories}
+          <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-platforms">
+              {romData.stats.totalCategories}
+            </div>
+            <div className="text-foreground/80">Platforms</div>
           </div>
-          <div className="text-foreground/80">Platforms</div>
-        </div>
-        <div className="bg-card border border-border rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-downloads">
-            {romData.stats.totalDownloads}
+          <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-downloads">
+              {romData.stats.totalDownloads}
+            </div>
+            <div className="text-foreground/80">Downloads</div>
           </div>
-          <div className="text-foreground/80">Downloads</div>
-        </div>
-        <div className="bg-card border border-border rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-active-users">
-            {romData.stats.activeUsers}
+          <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-active-users">
+              {romData.stats.activeUsers}
+            </div>
+            <div className="text-foreground/80">Active Users</div>
           </div>
-          <div className="text-foreground/80">Active Users</div>
-        </div>
-      </section>
+        </section>
+      ) : isLoading ? (
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-6 text-center">
+              <div className="loading-skeleton h-8 w-16 mx-auto mb-2" />
+              <div className="loading-skeleton h-4 w-20 mx-auto" />
+            </div>
+          ))}
+        </section>
+      ) : null}
 
       {/* Content Section */}
       <section className="prose prose-lg max-w-none">
