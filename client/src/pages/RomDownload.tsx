@@ -64,22 +64,7 @@ export default function RomDownload() {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="flex items-center space-x-4 mb-8">
-            <Skeleton className="h-10 w-10" />
-            <div className="space-y-2">
-              <Skeleton className="h-10 w-96" />
-              <Skeleton className="h-6 w-64" />
-            </div>
-          </div>
-          <Skeleton className="w-full h-96 rounded-lg" />
-        </div>
-      </div>
-    );
-  }
+  // Always show the layout structure immediately
 
   if (!game) {
     return (
@@ -107,7 +92,7 @@ export default function RomDownload() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
-          <Link to={`/roms/${params.console}/${params.slug}`}>
+          <Link to={params ? `/roms/${params.console}/${params.slug}` : '/roms'}>
             <Button 
               variant="secondary" 
               size="sm"
@@ -118,12 +103,21 @@ export default function RomDownload() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold" data-testid="text-download-title">
-              Download {game.title}
-            </h1>
-            <p className="text-muted-foreground mt-2" data-testid="text-download-meta">
-              {game.platform} • {game.size}
-            </p>
+            {game ? (
+              <>
+                <h1 className="text-3xl font-bold" data-testid="text-download-title">
+                  Download {game.title}
+                </h1>
+                <p className="text-muted-foreground mt-2" data-testid="text-download-meta">
+                  {game.platform} • {game.size}
+                </p>
+              </>
+            ) : (
+              <>
+                <Skeleton className="h-9 w-80 mb-2" />
+                <Skeleton className="h-5 w-40" />
+              </>
+            )}
           </div>
         </div>
 
@@ -131,79 +125,104 @@ export default function RomDownload() {
         {/* Download Card */}
         <Card>
           <CardContent className="space-y-6">
-            {/* Timer Section (appears first when countdown is active) */}
-            {!showDownload && (
-              <div className="text-center py-8">
-                <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-primary mb-2" data-testid="text-countdown">
-                  {countdown}
-                </div>
-                <p className="text-muted-foreground">
-                  Preparing your download... Please wait {countdown} second{countdown !== 1 ? 's' : ''}
-                </p>
-                <div className="w-full bg-muted rounded-full h-2 mt-4">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-1000"
-                    style={{ width: `${((5 - countdown) / 5) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
+            {game ? (
+              <>
+                {/* Timer Section (appears first when countdown is active) */}
+                {!showDownload && (
+                  <div className="text-center py-8">
+                    <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
+                    <div className="text-2xl font-bold text-primary mb-2" data-testid="text-countdown">
+                      {countdown}
+                    </div>
+                    <p className="text-muted-foreground">
+                      Preparing your download... Please wait {countdown} second{countdown !== 1 ? 's' : ''}
+                    </p>
+                    <div className="w-full bg-muted rounded-full h-2 mt-4">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-1000"
+                        style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
 
-            {/* Game Info */}
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">File:</span> 
-                  <span className="font-medium ml-2" data-testid="text-download-filename">
-                    {game.fileName}
-                  </span>
+                {/* Game Info */}
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">File:</span> 
+                      <span className="font-medium ml-2" data-testid="text-download-filename">
+                        {game.fileName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Size:</span> 
+                      <span className="font-medium ml-2" data-testid="text-download-size">
+                        {game.size}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Console:</span> 
+                      <span className="font-medium ml-2" data-testid="text-download-console">
+                        {game.console}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Rating:</span> 
+                      <span className="font-medium ml-2" data-testid="text-download-rating">
+                        {game.rating}/5 ⭐
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-muted-foreground">Size:</span> 
-                  <span className="font-medium ml-2" data-testid="text-download-size">
-                    {game.size}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Console:</span> 
-                  <span className="font-medium ml-2" data-testid="text-download-console">
-                    {game.console}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Rating:</span> 
-                  <span className="font-medium ml-2" data-testid="text-download-rating">
-                    {game.rating}/5 ⭐
-                  </span>
-                </div>
-              </div>
-            </div>
 
-            {/* Download Section (appears when countdown is done) */}
-            {showDownload && (
-              <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Download className="h-10 w-10 text-primary" />
+                {/* Download Section (appears when countdown is done) */}
+                {showDownload && (
+                  <div className="text-center space-y-4">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                      <Download className="h-10 w-10 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold" data-testid="text-ready-download">
+                        Ready to Download
+                      </h3>
+                      <p className="text-muted-foreground mt-2">
+                        Your download will begin automatically when you click the button below
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={handleDirectDownload}
+                      className="w-full py-4 text-lg font-semibold"
+                      size="lg"
+                      data-testid="button-start-download"
+                    >
+                      <Download className="mr-3 h-5 w-5" />
+                      Start Download
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {/* Loading skeleton for download card */}
+                <div className="text-center py-8">
+                  <Skeleton className="h-12 w-12 rounded-full mx-auto mb-4" />
+                  <Skeleton className="h-8 w-32 mx-auto mb-2" />
+                  <Skeleton className="h-4 w-64 mx-auto mb-4" />
+                  <Skeleton className="h-2 w-full" />
                 </div>
-                <div>
-                  <h3 className="text-2xl font-bold" data-testid="text-ready-download">
-                    Ready to Download
-                  </h3>
-                  <p className="text-muted-foreground mt-2">
-                    Your download will begin automatically when you click the button below
-                  </p>
+                
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i}>
+                        <Skeleton className="h-4 w-12 mb-1" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <Button 
-                  onClick={handleDirectDownload}
-                  className="w-full py-4 text-lg font-semibold"
-                  size="lg"
-                  data-testid="button-start-download"
-                >
-                  <Download className="mr-3 h-5 w-5" />
-                  Start Download
-                </Button>
-              </div>
+              </>
             )}
 
             {/* Security Notice */}
