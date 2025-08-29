@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useRoute } from "wouter";
+import { Link, useRoute, useLocation } from "wouter";
 import { GameCard } from "@/components/game/GameCard";
 import { SearchBar } from "@/components/game/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { GameData } from "@shared/schema";
 
 export default function Roms() {
+  const [location] = useLocation();
   const [match, params] = useRoute("/roms/:console?");
   const [searchMatch] = useRoute("/search");
   const [search, setSearch] = useState("");
@@ -22,12 +23,13 @@ export default function Roms() {
   useEffect(() => {
     if (searchMatch) {
       const urlParams = new URLSearchParams(window.location.search);
-      const searchQuery = urlParams.get('q');
-      if (searchQuery) {
-        setSearch(searchQuery);
-      }
+      const searchQuery = urlParams.get('q') || '';
+      setSearch(searchQuery);
+      setCurrentPage(1); // Reset page when search changes
+    } else {
+      setSearch(''); // Clear search when not on search page
     }
-  }, [searchMatch]);
+  }, [searchMatch, location]);
 
   // Update selectedConsole when URL changes
   useEffect(() => {
@@ -60,6 +62,13 @@ export default function Roms() {
   useEffect(() => {
     setCurrentPage(1);
   }, [search, sortBy, selectedConsole, selectedCategory]);
+
+  // Scroll to top when page changes (for pagination)
+  useEffect(() => {
+    if (searchMatch) {
+      window.scrollTo(0, 0);
+    }
+  }, [currentPage, searchMatch]);
 
   const totalPages = romsData ? Math.ceil(romsData.total / limit) : 0;
   const startIndex = (currentPage - 1) * limit + 1;
