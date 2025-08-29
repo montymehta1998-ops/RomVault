@@ -238,26 +238,115 @@ export default function Roms() {
     Array.from(new Set(allRomsData.games.map(game => game.category))).sort() : 
     [];
 
+  // Console-specific information for SEO
+  const getConsoleInfo = (consoleName: string) => {
+    const consoleData: Record<string, { title: string; description: string; info: string }> = {
+      'PSP': {
+        title: 'PlayStation Portable (PSP) ROMs',
+        description: 'Browse our complete collection of PlayStation Portable (PSP) ROMs. Download classic PSP games and enjoy portable gaming.',
+        info: `The PlayStation Portable (PSP) was Sony's revolutionary handheld gaming console launched in 2004. Featuring console-quality graphics on a portable device, the PSP introduced the Universal Media Disc (UMD) format and offered multimedia capabilities including video playback, web browsing, and music. With its 4.3-inch LCD screen and powerful hardware, the PSP delivered exceptional gaming experiences with titles like God of War: Chains of Olympus, Grand Theft Auto: Vice City Stories, and Monster Hunter series. The system sold over 80 million units worldwide and established Sony as a major player in the handheld gaming market, paving the way for modern portable gaming devices.`
+      },
+      'N64': {
+        title: 'Nintendo 64 (N64) ROMs',
+        description: 'Browse our complete collection of Nintendo 64 (N64) ROMs. Download classic N64 games and relive the golden age of gaming.',
+        info: `The Nintendo 64, released in 1996, revolutionized gaming with its groundbreaking 64-bit architecture and innovative three-pronged controller featuring the industry's first analog stick. This powerful console introduced true 3D gaming to the mainstream with legendary titles like Super Mario 64, The Legend of Zelda: Ocarina of Time, and GoldenEye 007. The N64's cartridge-based games offered instant loading and durability, while built-in 4-player support made it the ultimate party gaming console. With over 32 million units sold worldwide, the Nintendo 64 established many gaming conventions still used today and remains one of the most beloved consoles in gaming history.`
+      },
+      'SNES': {
+        title: 'Super Nintendo (SNES) ROMs',
+        description: 'Browse our complete collection of Super Nintendo (SNES) ROMs. Download classic SNES games and experience 16-bit gaming perfection.',
+        info: `The Super Nintendo Entertainment System (SNES), launched in 1991, defined the golden age of 16-bit gaming with its revolutionary Mode 7 graphics and superior sound capabilities. This iconic console delivered legendary games like Super Mario World, The Legend of Zelda: A Link to the Past, Super Metroid, and Chrono Trigger. The SNES featured advanced graphics with rotation and scaling effects, true stereo sound, and the first controller with shoulder buttons. With 49.1 million units sold worldwide, the SNES won the fierce console wars of the 1990s and is widely regarded as one of the greatest gaming consoles ever created, hosting a library of timeless classics that continue to influence game design today.`
+      },
+      'PS2': {
+        title: 'PlayStation 2 (PS2) ROMs',
+        description: 'Browse our complete collection of PlayStation 2 (PS2) ROMs. Download classic PS2 games from the best-selling console of all time.',
+        info: `The PlayStation 2, released in 2000, became the best-selling video game console in history with over 155 million units sold worldwide. This groundbreaking system introduced DVD playback, backward compatibility with original PlayStation games, and delivered exceptional gaming experiences with titles like Grand Theft Auto: San Andreas, God of War series, and Final Fantasy X. The PS2's diverse library included over 3,800 games across every genre, making it appealing to all types of gamers. Its 12-year production run and massive third-party support established Sony's dominance in the gaming industry and created a legacy that influences console design to this day.`
+      },
+      'PSX': {
+        title: 'PlayStation (PSX) ROMs',
+        description: 'Browse our complete collection of original PlayStation (PSX) ROMs. Download classic PS1 games that defined a generation.',
+        info: `The original PlayStation, launched in 1994, revolutionized the gaming industry by bringing 3D graphics and CD-ROM technology to mainstream gaming. Sony's debut console dethroned Nintendo's dominance with superior graphics, mature game content, and strong third-party support. Iconic games like Final Fantasy VII, Metal Gear Solid, Resident Evil, and Gran Turismo established new franchises and gaming genres. The PlayStation sold over 102 million units worldwide and introduced features like analog controls, vibration feedback, and multi-disc games, setting the foundation for modern gaming and establishing Sony as a major force in the video game industry.`
+      },
+      'GBA': {
+        title: 'Game Boy Advance (GBA) ROMs',
+        description: 'Browse our complete collection of Game Boy Advance (GBA) ROMs. Download classic GBA games and portable gaming favorites.',
+        info: `The Game Boy Advance, released in 2001, advanced portable gaming with its 32-bit processor and vibrant color display. This revolutionary handheld featured backward compatibility with Game Boy and Game Boy Color games, ensuring access to Nintendo's extensive portable gaming library. The GBA delivered console-quality experiences in games like The Legend of Zelda: The Minish Cap, Pokémon Ruby/Sapphire, and Metroid Fusion. With over 81 million units sold worldwide, the Game Boy Advance maintained Nintendo's dominance in the handheld market and provided the foundation for the dual-screen innovation that would follow with the Nintendo DS.`
+      },
+      'NES': {
+        title: 'Nintendo Entertainment System (NES) ROMs',
+        description: 'Browse our complete collection of Nintendo Entertainment System (NES) ROMs. Download classic NES games that saved the video game industry.',
+        info: `The Nintendo Entertainment System (NES), released in 1985, single-handedly revived the video game industry after the 1983 crash. This revolutionary 8-bit console introduced legendary franchises like Super Mario Bros., The Legend of Zelda, and Metroid. The NES featured the iconic D-pad controller and established many gaming conventions still used today. With classics like Super Mario Bros. 3, Mega Man series, and Final Fantasy, the NES sold over 61 million units worldwide and laid the foundation for Nintendo's gaming empire, making it one of the most important and influential consoles in gaming history.`
+      },
+      'Genesis': {
+        title: 'Sega Genesis ROMs',
+        description: 'Browse our complete collection of Sega Genesis ROMs. Download classic Genesis games and experience Sega\'s 16-bit powerhouse.',
+        info: `The Sega Genesis (known as Mega Drive outside North America), released in 1988, challenged Nintendo's dominance with its "blast processing" and edgier game library. This 16-bit console featured iconic games like Sonic the Hedgehog, Streets of Rage, and Phantasy Star series. The Genesis was known for its superior arcade ports and mature content, appealing to older gamers with titles like Mortal Kombat. With over 30 million units sold worldwide, the Genesis established Sega as a major player in the console wars and created a legacy of fast-paced, action-packed gaming that defined the early 1990s.`
+      },
+      'GB': {
+        title: 'Game Boy ROMs',
+        description: 'Browse our complete collection of original Game Boy ROMs. Download classic Game Boy games that defined portable gaming.',
+        info: `The original Game Boy, released in 1989, revolutionized portable gaming with its monochrome screen and incredible battery life. Despite being less powerful than competing handhelds, the Game Boy's affordability and killer app Tetris made it an instant success. The system featured legendary games like Pokémon Red/Blue, Super Mario Land, and The Legend of Zelda: Link's Awakening. With over 118 million units sold worldwide, the Game Boy established Nintendo's dominance in the handheld market and proved that gameplay matters more than graphics, creating a portable gaming revolution that continues to this day.`
+      },
+      'GBC': {
+        title: 'Game Boy Color ROMs',
+        description: 'Browse our complete collection of Game Boy Color ROMs. Download classic GBC games with vibrant color graphics.',
+        info: `The Game Boy Color, released in 1998, brought vibrant color graphics to Nintendo's successful handheld gaming formula. This enhanced Game Boy featured backward compatibility with original Game Boy games while offering new color-exclusive titles. The system showcased games like Pokémon Gold/Silver, The Legend of Zelda: Oracle series, and Super Mario Bros. Deluxe. With over 118 million units sold across both Game Boy models, the Game Boy Color extended the life of the Game Boy platform and served as a bridge between the original Game Boy and the more advanced Game Boy Advance, maintaining Nintendo's portable gaming dominance.`
+      },
+      'Dreamcast': {
+        title: 'Sega Dreamcast ROMs',
+        description: 'Browse our complete collection of Sega Dreamcast ROMs. Download classic Dreamcast games from Sega\'s innovative final console.',
+        info: `The Sega Dreamcast, released in 1998, was Sega's innovative final home console that pioneered online gaming and featured stunning graphics. Despite its technological superiority and built-in modem for internet connectivity, the Dreamcast faced fierce competition from Sony's PlayStation 2. The system delivered exceptional games like Shenmue, Jet Set Radio, Crazy Taxi, and Sonic Adventure. With its unique library of creative and experimental games, the Dreamcast sold 9.13 million units worldwide and developed a passionate cult following. Though discontinued in 2001, the Dreamcast is remembered as ahead of its time and influenced many modern gaming concepts.`
+      }
+    };
+    
+    return consoleData[consoleName] || {
+      title: `${consoleName} ROMs`,
+      description: `Browse our complete collection of ${consoleName} ROMs. Download classic ${consoleName} games and enjoy retro gaming.`,
+      info: `The ${consoleName} console offered unique gaming experiences with a diverse library of classic games. Explore our collection of ${consoleName} ROMs and rediscover the games that made this system special.`
+    };
+  };
+
+  const consoleInfo = selectedConsole ? getConsoleInfo(selectedConsole) : null;
+
+  // Set page title and meta description based on console
+  useEffect(() => {
+    if (selectedConsole && consoleInfo) {
+      document.title = `${consoleInfo.title} - Free Download - EmulatorGames.net`;
+      
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', consoleInfo.description);
+      }
+    } else if (searchMatch && currentSearch) {
+      document.title = `Search Results for "${currentSearch}" - EmulatorGames.net`;
+    } else {
+      document.title = 'ROMs Archive - Browse All Gaming ROMs - EmulatorGames.net';
+    }
+  }, [selectedConsole, consoleInfo, searchMatch, currentSearch]);
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Page Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4" data-testid="text-roms-title">
-          {searchMatch && currentSearch ? `Search Results for "${currentSearch}"` : "ROMs Archive"}
+          {searchMatch && currentSearch ? 
+            `Search Results for "${currentSearch}"` : 
+            (selectedConsole && consoleInfo ? consoleInfo.title : "ROMs Archive")
+          }
         </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-testid="text-roms-description">
+        <p className="text-sm text-muted-foreground max-w-2xl mx-auto" data-testid="text-roms-description">
           {searchMatch && currentSearch ? 
             `Found ${romsData?.total || 0} games matching "${currentSearch}"` : 
-            "Browse our complete collection of retro gaming ROMs. Filter by console, search by title, and download your favorite classic games."
+            (selectedConsole && consoleInfo ? consoleInfo.description : 
+             "Browse our complete collection of retro gaming ROMs. Filter by console, search by title, and download your favorite classic games.")
           }
         </p>
       </div>
 
-      {/* Filters and Search */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        {!searchMatch && (
+      {/* Filters (Search removed from console pages) */}
+      <div className={`grid grid-cols-1 gap-4 mb-8 ${!searchMatch && !selectedConsole ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
+        {!searchMatch && !selectedConsole && (
           <SearchBar 
-            placeholder={selectedConsole ? `Search in ${selectedConsole}...` : "Search ROMs..."}
+            placeholder="Search ROMs..."
             className="w-full"
           />
         )}
@@ -382,6 +471,20 @@ export default function Roms() {
           >
             Next
           </Button>
+        </div>
+      )}
+
+      {/* Console Information Section */}
+      {selectedConsole && consoleInfo && !searchMatch && (
+        <div className="mt-16 bg-muted/30 rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4 text-foreground">
+            About the {selectedConsole}
+          </h2>
+          <div className="prose prose-lg max-w-none">
+            <p className="text-foreground/80 leading-relaxed">
+              {consoleInfo.info}
+            </p>
+          </div>
         </div>
       )}
     </div>
