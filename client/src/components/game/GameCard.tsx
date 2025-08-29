@@ -32,7 +32,7 @@ export function GameCard({ game }: GameCardProps) {
       className="game-card group bg-card border border-border rounded-lg overflow-hidden"
       data-testid={`card-game-${game.id}`}
     >
-      <Link to={`/roms/${game.console.toLowerCase()}/${game.id}`}>
+      <Link to={`/roms/${game.console.toLowerCase()}-roms/${game.id}`}>
         <img 
           src={game.image}
           alt={`${game.title} game cover`}
@@ -41,7 +41,7 @@ export function GameCard({ game }: GameCardProps) {
         />
       </Link>
       <div className="p-4">
-        <Link to={`/roms/${game.console.toLowerCase()}/${game.id}`}>
+        <Link to={`/roms/${game.console.toLowerCase()}-roms/${game.id}`}>
           <h3 className="font-semibold text-lg mb-2 hover:text-primary transition-colors cursor-pointer" data-testid={`text-game-title-${game.id}`}>
             {game.title}
           </h3>
