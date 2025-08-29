@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useLocation } from "wouter";
 import { GameCard } from "@/components/game/GameCard";
@@ -43,10 +43,13 @@ export default function Roms() {
   });
 
   // Get current search from URL if on search page, otherwise use local search state
-  const currentSearch = searchMatch ? (() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('q') || '';
-  })() : search;
+  const currentSearch = useMemo(() => {
+    if (searchMatch) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('q') || '';
+    }
+    return search;
+  }, [searchMatch, location, search]);
 
   const { data: romsData, isLoading } = useQuery<{ games: GameData[]; total: number }>({
     queryKey: ["/api/roms", selectedConsole, currentSearch, sortBy, currentPage, limit],
