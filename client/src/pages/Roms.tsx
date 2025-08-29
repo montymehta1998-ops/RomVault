@@ -43,14 +43,135 @@ export default function Roms() {
   // Update selectedConsole when URL changes
   useEffect(() => {
     if (params?.console) {
-      // Remove -roms suffix and convert underscores to spaces for display
+      // Remove -roms suffix and convert to proper console name
       let consoleName = params.console;
       if (consoleName.endsWith('-roms')) {
         consoleName = consoleName.slice(0, -5);
       }
-      // Convert hyphens back to underscores for API calls, then to uppercase
-      const consoleForApi = consoleName.replace(/-/g, '_').toUpperCase();
-      setSelectedConsole(consoleForApi);
+      
+      // Convert hyphenated console name to actual console names used in the API
+      // This maps from URL format (capcom-play-system-1) to API format (CPS 1)
+      const consoleNameMapping: Record<string, string> = {
+        'capcom-play-system-1': 'CPS 1',
+        'capcom-play-system-2': 'CPS 2', 
+        'capcom-play-system-3': 'CPS 3',
+        'cps1': 'CPS 1',
+        'cps2': 'CPS 2',
+        'cps3': 'CPS 3',
+        'acorn-archimedes': 'Acorn Archimedes',
+        'acorn-atom': 'Acorn Atom',
+        'action-max': 'Action Max',
+        'apple-2-gs': 'Apple II GS',
+        'apple-ii-gs': 'Apple II GS',
+        'apple-2': 'Apple II',
+        'apple-ii': 'Apple II',
+        'amstrad-cpc': 'Amstrad CPC',
+        'amstrad-gx4000': 'GX4000',
+        'atari-2600': 'Atari 2600',
+        'atari-5200': 'Atari 5200',
+        'atari-7800': 'Atari 7800',
+        'atari-8-bit': 'Atari 800',
+        'atari-800': 'Atari 800',
+        'atari-jaguar': 'Atari Jaguar',
+        'atari-lynx': 'Atari Lynx',
+        'atari-st': 'Atari ST',
+        'bally-astrocade': 'Bally Arcade',
+        'bbc-micro': 'BBC Micro',
+        'cd-i': 'CD-i',
+        'commodore-64-preservation': 'C64 Preservation',
+        'commodore-64-tapes': 'C64 Tapes',
+        'commodore-vic-20': 'Commodore VIC-20',
+        'gameboy-color': 'GBC',
+        'game-boy-color': 'GBC',
+        'gameboy': 'GB',
+        'game-boy': 'GB',
+        'game-boy-advance': 'GBA',
+        'gba': 'GBA',
+        'gamecube': 'GameCube',
+        'game-gear': 'Game Gear',
+        'sega-game-gear': 'Game Gear',
+        'gce-vectrex': 'Vectrex',
+        'vectrex': 'Vectrex',
+        'magnavox-odyssey-2': 'Magnavox Odyssey 2',
+        'msx-2': 'MSX2',
+        'msx2': 'MSX2',
+        'msx': 'MSX',
+        'n-gage': 'N-Gage',
+        'neo-geo-pocket': 'NGP',
+        'neo-geo': 'Neo Geo',
+        'nintendo-64': 'N64',
+        'n64': 'N64',
+        'nintendo-ds': 'NDS',
+        'nds': 'NDS',
+        'nintendo-wii': 'Wii',
+        'wii': 'Wii',
+        'nintendo-wii-u': 'Wii U',
+        'wii-u': 'Wii U',
+        'nintendo-switch': 'Switch',
+        'switch': 'Switch',
+        'nes': 'NES',
+        'nintendo-entertainment-system': 'NES',
+        'snes': 'SNES',
+        'super-nintendo': 'SNES',
+        'famicom': 'Famicom',
+        'pc-fx': 'PC-FX',
+        'playstation': 'PSX',
+        'playstation-1': 'PSX',
+        'psx': 'PSX',
+        'playstation-2': 'PS2',
+        'ps2': 'PS2',
+        'playstation-3': 'PS3', 
+        'ps3': 'PS3',
+        'playstation-4': 'PS4',
+        'ps4': 'PS4',
+        'playstation-portable': 'PSP',
+        'psp': 'PSP',
+        'playstation-vita': 'PS Vita',
+        'ps-vita': 'PS Vita',
+        'pokemon-mini': 'Pokemon Mini',
+        'sam-coupe': 'SAM Coupe',
+        'sega-32x': '32X',
+        '32x': '32X',
+        'sega-cd': 'Sega CD',
+        'sega-dreamcast': 'Dreamcast',
+        'dreamcast': 'Dreamcast',
+        'sega-genesis': 'Genesis',
+        'genesis': 'Genesis',
+        'sega-master-system': 'Master System',
+        'master-system': 'Master System',
+        'sega-saturn': 'Saturn',
+        'saturn': 'Saturn',
+        'sg-1000': 'SG-1000',
+        'super-cassette-vision': 'Super Cassette Vision',
+        'tandy-trs-80': 'TRS-80',
+        'trs-80': 'TRS-80',
+        'tatung-einstein': 'Tatung Einstein',
+        'tiger-game-com': 'Game com',
+        'game-com': 'Game com',
+        'trs-80-color-computer': 'TRS-80 Color Computer',
+        'turbo-duo': 'TurboGrafx-16',
+        'turbografx-16': 'TurboGrafx-16',
+        'virtual-boy': 'Virtual Boy',
+        'watara-supervision': 'Watara Supervision',
+        'wonderswan-color': 'WonderSwan Color',
+        'wonderswan': 'WonderSwan',
+        'xbox': 'Xbox',
+        'xbox-one': 'Xbox One',
+        'xbox-360': 'Xbox 360',
+        'z-machine': 'Z-Machine',
+        'zx-spectrum': 'ZX Spectrum',
+        'zx81': 'ZX81',
+        '3do': '3DO',
+        '3ds': '3DS',
+        'dos': 'Dos',
+        'mame': 'MAME',
+        'scummvm': 'ScummVM'
+      };
+      
+      const mappedConsoleName = consoleNameMapping[consoleName] || 
+        consoleName.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      
+      setSelectedConsole(mappedConsoleName);
     }
   }, [params?.console]);
 
@@ -68,10 +189,11 @@ export default function Roms() {
   }, [searchMatch, location, search]);
 
   const { data: romsData, isLoading } = useQuery<{ games: GameData[]; total: number }>({
-    queryKey: ["/api/roms", selectedConsole, currentSearch, sortBy, currentPage, limit],
+    queryKey: ["/api/roms", selectedConsole, selectedCategory, currentSearch, sortBy, currentPage, limit],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedConsole) params.append('console', selectedConsole);
+      if (selectedCategory) params.append('category', selectedCategory);
       if (currentSearch) params.append('search', currentSearch);
       params.append('sortBy', sortBy);
       params.append('page', currentPage.toString());
@@ -99,9 +221,21 @@ export default function Roms() {
   const startIndex = (currentPage - 1) * limit + 1;
   const endIndex = Math.min(startIndex + limit - 1, romsData?.total || 0);
 
-  // Get unique categories from games
-  const categories = romsData ? 
-    Array.from(new Set(romsData.games.map(game => game.category))).sort() : 
+  // Get unique categories from current filtered games (for the current console)
+  const { data: allRomsData } = useQuery<{ games: GameData[]; total: number }>({
+    queryKey: ["/api/roms", selectedConsole], // Only get games for selected console
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedConsole) params.append('console', selectedConsole);
+      
+      const response = await fetch(`/api/roms?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch ROMs');
+      return response.json();
+    },
+  });
+
+  const categories = allRomsData ? 
+    Array.from(new Set(allRomsData.games.map(game => game.category))).sort() : 
     [];
 
   return (
@@ -120,10 +254,10 @@ export default function Roms() {
       </div>
 
       {/* Filters and Search */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         {!searchMatch && (
           <SearchBar 
-            placeholder="Search ROMs..."
+            placeholder={selectedConsole ? `Search in ${selectedConsole}...` : "Search ROMs..."}
             className="w-full"
           />
         )}

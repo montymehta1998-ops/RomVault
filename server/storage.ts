@@ -242,6 +242,7 @@ export class MemStorage implements IStorage {
   async getGames(params: {
     categoryId?: string;
     console?: string;
+    category?: string;
     search?: string;
     sortBy?: 'downloads' | 'rating' | 'year' | 'title';
     page?: number;
@@ -250,9 +251,14 @@ export class MemStorage implements IStorage {
     const data = await this.loadData();
     let games = [...data.games];
 
-    // Filter by category
+    // Filter by category ID
     if (params.categoryId) {
       games = games.filter(game => game.categoryId === params.categoryId);
+    }
+
+    // Filter by category name
+    if (params.category) {
+      games = games.filter(game => game.category.toLowerCase() === params.category!.toLowerCase());
     }
 
     // Filter by console

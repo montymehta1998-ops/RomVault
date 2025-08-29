@@ -109,6 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const result = await storage.getGames({
         console: console as string,
+        category: category as string,
         search: search as string,
         sortBy: sortBy as 'downloads' | 'rating' | 'year' | 'title',
         page: parseInt(page as string),
