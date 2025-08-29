@@ -19,20 +19,29 @@ export default function Roms() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const limit = 20;
 
-  // Handle search from URL parameters - run on every render to catch URL changes
+  // Handle search from URL parameters
   useEffect(() => {
     if (searchMatch) {
       const urlParams = new URLSearchParams(window.location.search);
       const searchQuery = urlParams.get('q') || '';
-      console.log('Setting search from URL:', searchQuery, 'current search state:', search);
-      if (searchQuery !== search) {
-        setSearch(searchQuery);
-        setCurrentPage(1); // Reset page when search changes
-      }
-    } else if (search !== '') {
+      setSearch(searchQuery);
+      setCurrentPage(1); // Reset page when search changes
+    } else {
       setSearch(''); // Clear search when not on search page
     }
-  }); // Remove dependencies to run on every render
+  }, [searchMatch]); // Only run when searchMatch changes
+
+  // Separate effect to handle URL search parameter changes
+  useEffect(() => {
+    if (searchMatch) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('q') || '';
+      if (searchQuery !== search) {
+        setSearch(searchQuery);
+        setCurrentPage(1);
+      }
+    }
+  }, [location, searchMatch]);
 
   // Update selectedConsole when URL changes
   useEffect(() => {
@@ -55,7 +64,6 @@ export default function Roms() {
       params.append('page', currentPage.toString());
       params.append('limit', limit.toString());
       
-      console.log('API call with search:', search, 'URL:', `/api/roms?${params.toString()}`);
       const response = await fetch(`/api/roms?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch ROMs');
       return response.json();
@@ -102,10 +110,8 @@ export default function Roms() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {!searchMatch && (
           <SearchBar 
-            onSearch={setSearch}
             placeholder="Search ROMs..."
             className="w-full"
-            value={search}
           />
         )}
         
