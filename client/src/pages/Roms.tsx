@@ -72,12 +72,12 @@ export default function Roms() {
           className="w-full"
         />
         
-        <Select value={selectedConsole} onValueChange={setSelectedConsole}>
+        <Select value={selectedConsole || "all-consoles"} onValueChange={(value) => setSelectedConsole(value === "all-consoles" ? "" : value)}>
           <SelectTrigger data-testid="select-console-filter">
             <SelectValue placeholder="Filter by Console" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Consoles</SelectItem>
+            <SelectItem value="all-consoles">All Consoles</SelectItem>
             {consoles?.map(console => (
               <SelectItem key={console} value={console}>
                 {console}
@@ -86,12 +86,12 @@ export default function Roms() {
           </SelectContent>
         </Select>
 
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+        <Select value={selectedCategory || "all-categories"} onValueChange={(value) => setSelectedCategory(value === "all-categories" ? "" : value)}>
           <SelectTrigger data-testid="select-category-filter">
             <SelectValue placeholder="Filter by Category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all-categories">All Categories</SelectItem>
             {categories.map(category => (
               <SelectItem key={category} value={category}>
                 {category}
