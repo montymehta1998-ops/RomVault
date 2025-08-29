@@ -70,14 +70,6 @@ export default function Roms() {
     Array.from(new Set(romsData.games.map(game => game.category))).sort() : 
     [];
 
-  const createSlug = (fileName: string) => {
-    return fileName
-      .toLowerCase()
-      .replace(/\.[^/.]+$/, "") // Remove file extension
-      .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with hyphens
-      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Page Header */}
@@ -160,56 +152,9 @@ export default function Roms() {
             <div key={i} className="loading-skeleton rounded-lg h-80" />
           ))
         ) : romsData && romsData.games.length > 0 ? (
-          romsData.games.map(game => {
-            const slug = createSlug(game.fileName);
-            return (
-              <div 
-                key={game.id} 
-                className="game-card group bg-card border border-border rounded-lg overflow-hidden"
-                data-testid={`card-rom-${game.id}`}
-              >
-                <Link to={`/roms/${game.console.toLowerCase()}/${slug}`}>
-                  <img 
-                    src={game.image}
-                    alt={`${game.title} game cover`}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                </Link>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2" data-testid={`text-rom-title-${game.id}`}>
-                    {game.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-2" data-testid={`text-rom-platform-${game.id}`}>
-                    {game.platform}
-                  </p>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-1">
-                      <span className="star-rating">{"★".repeat(Math.floor(game.rating))}</span>
-                      <span className="text-sm text-muted-foreground" data-testid={`text-rom-rating-${game.id}`}>
-                        {game.rating}
-                      </span>
-                    </div>
-                    <span className="text-sm text-muted-foreground" data-testid={`text-rom-downloads-${game.id}`}>
-                      {game.downloads >= 1000 ? `${(game.downloads / 1000).toFixed(1)}K` : game.downloads} downloads
-                    </span>
-                  </div>
-                  <div className="text-xs text-muted-foreground mb-3">
-                    <div>Size: <span data-testid={`text-rom-size-${game.id}`}>{game.size}</span></div>
-                    <div>Year: <span data-testid={`text-rom-year-${game.id}`}>{game.year}</span></div>
-                  </div>
-                  <Link to={`/roms/${game.console.toLowerCase()}/${slug}`}>
-                    <Button 
-                      className="w-full"
-                      data-testid={`button-view-rom-${game.id}`}
-                    >
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            );
-          })
+          romsData.games.map(game => (
+            <GameCard key={game.id} game={game} />
+          ))
         ) : (
           <div className="col-span-full text-center py-12">
             <p className="text-muted-foreground" data-testid="text-no-roms">
