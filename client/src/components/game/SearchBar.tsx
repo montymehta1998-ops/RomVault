@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 
 interface SearchBarProps {
@@ -22,12 +22,27 @@ export function SearchBar({
     setQuery(value);
   }, [value]);
 
+  // Debounced search for real-time filtering
+  const debouncedSearch = useCallback((searchQuery: string) => {
+    if (onSearch) {
+      onSearch(searchQuery);
+    }
+  }, [onSearch]);
+
+  // Debounce timer
+  useEffect(() => {
+    if (onSearch) {
+      const timer = setTimeout(() => {
+        debouncedSearch(query);
+      }, 300); // 300ms debounce
+
+      return () => clearTimeout(timer);
+    }
+  }, [query, debouncedSearch, onSearch]);
+
   const handleInputChange = (inputValue: string) => {
     setQuery(inputValue);
-    // Only trigger local search callback for real-time filtering if provided
-    if (onSearch) {
-      onSearch(inputValue);
-    }
+    // The debounced search will handle calling onSearch
   };
 
   const handleSearch = () => {

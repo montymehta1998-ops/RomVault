@@ -29,19 +29,7 @@ export default function Roms() {
     } else {
       setSearch(''); // Clear search when not on search page
     }
-  }, [searchMatch]); // Only run when searchMatch changes
-
-  // Separate effect to handle URL search parameter changes
-  useEffect(() => {
-    if (searchMatch) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const searchQuery = urlParams.get('q') || '';
-      if (searchQuery !== search) {
-        setSearch(searchQuery);
-        setCurrentPage(1);
-      }
-    }
-  }, [location, searchMatch]);
+  }, [searchMatch, location]); // Add location as dependency to react to URL changes
 
   // Update selectedConsole when URL changes
   useEffect(() => {
@@ -54,12 +42,18 @@ export default function Roms() {
     queryKey: ["/api/consoles"],
   });
 
+  // Get current search from URL if on search page, otherwise use local search state
+  const currentSearch = searchMatch ? (() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('q') || '';
+  })() : search;
+
   const { data: romsData, isLoading } = useQuery<{ games: GameData[]; total: number }>({
-    queryKey: ["/api/roms", selectedConsole, search, sortBy, currentPage, limit],
+    queryKey: ["/api/roms", selectedConsole, currentSearch, sortBy, currentPage, limit],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedConsole) params.append('console', selectedConsole);
-      if (search) params.append('search', search);
+      if (currentSearch) params.append('search', currentSearch);
       params.append('sortBy', sortBy);
       params.append('page', currentPage.toString());
       params.append('limit', limit.toString());
@@ -73,7 +67,7 @@ export default function Roms() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, sortBy, selectedConsole, selectedCategory]);
+  }, [currentSearch, sortBy, selectedConsole, selectedCategory]);
 
   // Scroll to top when page changes (for pagination)
   useEffect(() => {
@@ -96,11 +90,11 @@ export default function Roms() {
       {/* Page Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4" data-testid="text-roms-title">
-          {searchMatch && search ? `Search Results for "${search}"` : "ROMs Archive"}
+          {searchMatch && currentSearch ? `Search Results for "${currentSearch}"` : "ROMs Archive"}
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-testid="text-roms-description">
-          {searchMatch && search ? 
-            `Found ${romsData?.total || 0} games matching "${search}"` : 
+          {searchMatch && currentSearch ? 
+            `Found ${romsData?.total || 0} games matching "${currentSearch}"` : 
             "Browse our complete collection of retro gaming ROMs. Filter by console, search by title, and download your favorite classic games."
           }
         </p>
@@ -179,7 +173,7 @@ export default function Roms() {
         ) : (
           <div className="col-span-full text-center py-12">
             <p className="text-muted-foreground" data-testid="text-no-roms">
-              {search ? `No ROMs found matching "${search}"` : "No ROMs found"}
+              {currentSearch ? `No ROMs found matching "${currentSearch}"` : "No ROMs found"}
             </p>
           </div>
         )}
