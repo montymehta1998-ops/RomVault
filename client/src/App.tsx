@@ -8,7 +8,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Home from "@/pages/Home";
 import Category from "@/pages/Category";
-import GameDetail from "@/pages/GameDetail";
 import Roms from "@/pages/Roms";
 import RomDetail from "@/pages/RomDetail";
 import RomDownload from "@/pages/RomDownload";
@@ -22,7 +21,6 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/category/:id" component={Category} />
-          <Route path="/game/:id" component={GameDetail} />
           <Route path="/roms" component={Roms} />
           <Route path="/roms/:console/:slug/download" component={RomDownload} />
           <Route path="/roms/:console/:slug" component={RomDetail} />
