@@ -311,12 +311,37 @@ export class MemStorage implements IStorage {
           'sg_1000': 16
         };
 
+        // Mapping for console keys to full descriptive IDs with -roms suffix
+        const consoleIdMapping: Record<string, string> = {
+          'psp': 'playstation-portable-roms',
+          'ps2': 'playstation-2-roms',
+          '3ds': 'nintendo-3ds-roms',
+          'gba': 'gameboy-advance-roms',
+          'n64': 'nintendo-64-roms',
+          'nds': 'nintendo-ds-roms',
+          'ps3': 'playstation-3-roms',
+          'wii': 'nintendo-wii-roms',
+          'snes': 'super-nintendo-roms',
+          'nes': 'nintendo-roms',
+          'playstation': 'playstation-roms',
+          'gamecube': 'nintendo-gamecube-roms',
+          'switch': 'nintendo-switch-roms',
+          'xbox': 'microsoft-xbox-roms',
+          'xbox_one': 'microsoft-xbox-one-roms',
+          'gameboy': 'gameboy-roms',
+          'gameboy_color': 'gameboy-color-roms',
+          'mame': 'arcade-mame-roms',
+          'playstation_vita': 'playstation-vita-roms',
+          'playstation_4': 'playstation-4-roms',
+          'nintendo_wii_u': 'nintendo-wii-u-roms'
+        };
+
         // Process each console's ROM file
         for (const file of jsonFiles) {
           const consoleKey = file.replace('_roms.json', '');
           const consoleName = consoleNames[consoleKey] || consoleKey.toUpperCase();
-          // Create URL-friendly console ID with hyphens
-          const consoleId = consoleKey.replace(/_/g, '-');
+          // Create URL-friendly console ID with descriptive names and -roms suffix
+          const consoleId = consoleIdMapping[consoleKey] || `${consoleKey.replace(/_/g, '-')}-roms`;
           const filePath = path.join(this.dataDir, file);
           
           try {
@@ -363,7 +388,7 @@ export class MemStorage implements IStorage {
             
             categories.push({
               id: consoleId,
-              name: consoleName,
+              name: `${consoleName} ROMs`,
               description: `${consoleName} ROM collection`,
               image: convertedGames[0]?.image || '',
               gameCount: actualGameCount,
