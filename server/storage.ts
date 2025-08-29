@@ -137,6 +137,8 @@ export class MemStorage implements IStorage {
         for (const file of jsonFiles) {
           const consoleKey = file.replace('_roms.json', '');
           const consoleName = consoleNames[consoleKey] || consoleKey.toUpperCase();
+          // Create URL-friendly console ID with hyphens
+          const consoleId = consoleKey.replace(/_/g, '-');
           const filePath = path.join(this.dataDir, file);
           
           try {
@@ -160,7 +162,7 @@ export class MemStorage implements IStorage {
                 platform: consoleName,
                 console: game.console || consoleKey.toUpperCase(),
                 category: game.category === 'N/A' ? 'Other' : (game.category || 'Other'),
-                categoryId: consoleKey,
+                categoryId: consoleId,
                 image: game.image || '',
                 rating: Math.round(rating * 10) / 10, // Round to 1 decimal
                 downloads: downloads,
@@ -179,7 +181,7 @@ export class MemStorage implements IStorage {
             
             // Create category for this console
             categories.push({
-              id: consoleKey,
+              id: consoleId,
               name: consoleName,
               description: `${consoleName} ROM collection`,
               image: convertedGames[0]?.image || '',
@@ -310,18 +312,21 @@ export class MemStorage implements IStorage {
 
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
+    // Normalize console name for matching (handle both underscore and hyphen formats)
+    const normalizedConsole = console.toLowerCase().replace(/-/g, '_');
+    
     // First try to match by slug (id)
-    let game = data.games.find(game => 
-      game.console.toLowerCase() === console.toLowerCase() && 
-      game.id === slug
-    );
+    let game = data.games.find(game => {
+      const gameConsole = game.console.toLowerCase().replace(/-/g, '_');
+      return gameConsole === normalizedConsole && game.id === slug;
+    });
     
     // If not found, try to match by generated slug from filename
     if (!game) {
-      game = data.games.find(game => 
-        game.console.toLowerCase() === console.toLowerCase() && 
-        this.createSlug(game.fileName) === slug
-      );
+      game = data.games.find(game => {
+        const gameConsole = game.console.toLowerCase().replace(/-/g, '_');
+        return gameConsole === normalizedConsole && this.createSlug(game.fileName) === slug;
+      });
     }
     
     return game;

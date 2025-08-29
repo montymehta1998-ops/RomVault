@@ -31,10 +31,26 @@ export default function Roms() {
     }
   }, [searchMatch, location]); // Add location as dependency to react to URL changes
 
+  // Reset state when navigating to different console or clearing filters
+  useEffect(() => {
+    if (!params?.console) {
+      setSelectedConsole('');
+      setSelectedCategory('');
+      setCurrentPage(1);
+    }
+  }, [params?.console, location]);
+
   // Update selectedConsole when URL changes
   useEffect(() => {
     if (params?.console) {
-      setSelectedConsole(params.console.toUpperCase());
+      // Remove -roms suffix and convert underscores to spaces for display
+      let consoleName = params.console;
+      if (consoleName.endsWith('-roms')) {
+        consoleName = consoleName.slice(0, -5);
+      }
+      // Convert hyphens back to underscores for API calls, then to uppercase
+      const consoleForApi = consoleName.replace(/-/g, '_').toUpperCase();
+      setSelectedConsole(consoleForApi);
     }
   }, [params?.console]);
 
