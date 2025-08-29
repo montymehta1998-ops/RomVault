@@ -86,13 +86,15 @@ export default function Roms() {
       </div>
 
       {/* Filters and Search */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <SearchBar 
-          onSearch={setSearch}
-          placeholder="Search ROMs..."
-          className="w-full"
-          value={search}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {!searchMatch && (
+          <SearchBar 
+            onSearch={setSearch}
+            placeholder="Search ROMs..."
+            className="w-full"
+            value={search}
+          />
+        )}
         
         <Select value={selectedConsole || "all-consoles"} onValueChange={(value) => setSelectedConsole(value === "all-consoles" ? "" : value)}>
           <SelectTrigger data-testid="select-console-filter">
