@@ -130,18 +130,26 @@ export default function RomDownload() {
 
         {/* Download Card */}
         <Card>
-          <CardHeader className="text-center">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Download className="h-10 w-10 text-primary" />
-            </div>
-            <CardTitle className="text-2xl" data-testid="text-ready-download">
-              Ready to Download
-            </CardTitle>
-            <p className="text-muted-foreground">
-              Your download will begin automatically when you click the button below
-            </p>
-          </CardHeader>
           <CardContent className="space-y-6">
+            {/* Timer Section (appears first when countdown is active) */}
+            {!showDownload && (
+              <div className="text-center py-8">
+                <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
+                <div className="text-2xl font-bold text-primary mb-2" data-testid="text-countdown">
+                  {countdown}
+                </div>
+                <p className="text-muted-foreground">
+                  Preparing your download... Please wait {countdown} second{countdown !== 1 ? 's' : ''}
+                </p>
+                <div className="w-full bg-muted rounded-full h-2 mt-4">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-1000"
+                    style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
             {/* Game Info */}
             <div className="bg-muted/50 rounded-lg p-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -172,32 +180,29 @@ export default function RomDownload() {
               </div>
             </div>
 
-            {/* Download Button or Timer */}
-            {showDownload ? (
-              <Button 
-                onClick={handleDirectDownload}
-                className="w-full py-4 text-lg font-semibold"
-                size="lg"
-                data-testid="button-start-download"
-              >
-                <Download className="mr-3 h-5 w-5" />
-                Start Download
-              </Button>
-            ) : (
-              <div className="text-center py-8">
-                <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-primary mb-2" data-testid="text-countdown">
-                  {countdown}
+            {/* Download Section (appears when countdown is done) */}
+            {showDownload && (
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Download className="h-10 w-10 text-primary" />
                 </div>
-                <p className="text-muted-foreground">
-                  Preparing your download... Please wait {countdown} second{countdown !== 1 ? 's' : ''}
-                </p>
-                <div className="w-full bg-muted rounded-full h-2 mt-4">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-1000"
-                    style={{ width: `${((5 - countdown) / 5) * 100}%` }}
-                  ></div>
+                <div>
+                  <h3 className="text-2xl font-bold" data-testid="text-ready-download">
+                    Ready to Download
+                  </h3>
+                  <p className="text-muted-foreground mt-2">
+                    Your download will begin automatically when you click the button below
+                  </p>
                 </div>
+                <Button 
+                  onClick={handleDirectDownload}
+                  className="w-full py-4 text-lg font-semibold"
+                  size="lg"
+                  data-testid="button-start-download"
+                >
+                  <Download className="mr-3 h-5 w-5" />
+                  Start Download
+                </Button>
               </div>
             )}
 
