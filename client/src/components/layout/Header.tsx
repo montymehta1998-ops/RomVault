@@ -32,6 +32,13 @@ export function Header() {
               Categories
             </Link>
             <Link 
+              to="/roms" 
+              className={`transition-colors ${location.startsWith('/roms') ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
+              data-testid="link-roms"
+            >
+              ROMs
+            </Link>
+            <Link 
               to="/popular" 
               className={`transition-colors ${location === '/popular' ? 'text-foreground' : 'text-muted-foreground hover:text-primary'}`}
               data-testid="link-popular"

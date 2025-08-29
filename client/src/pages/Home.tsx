@@ -3,14 +3,14 @@ import { Link } from "wouter";
 import { CategoryCard } from "@/components/game/CategoryCard";
 import { GameCard } from "@/components/game/GameCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { RomData } from "@shared/schema";
+import type { RomData, GameData } from "@shared/schema";
 
 export default function Home() {
   const { data: romData, isLoading } = useQuery<RomData>({
     queryKey: ["/api/rom-data"],
   });
 
-  const { data: popularGames, isLoading: isLoadingPopular } = useQuery({
+  const { data: popularGames, isLoading: isLoadingPopular } = useQuery<GameData[]>({
     queryKey: ["/api/popular"],
   });
 
@@ -130,7 +130,7 @@ export default function Home() {
               <div key={i} className="loading-skeleton rounded-lg h-80" />
             ))
           ) : popularGames && popularGames.length > 0 ? (
-            popularGames.map((game: any) => (
+            popularGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))
           ) : (

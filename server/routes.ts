@@ -85,6 +85,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all consoles
+  app.get("/api/consoles", async (req, res) => {
+    try {
+      const consoles = await storage.getConsoles();
+      res.json(consoles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch consoles" });
+    }
+  });
+
+  // Get ROMs with pagination and filters
+  app.get("/api/roms", async (req, res) => {
+    try {
+      const {
+        console,
+        category,
+        search,
+        sortBy,
+        page = '1',
+        limit = '20'
+      } = req.query;
+
+      const result = await storage.getGames({
+        console: console as string,
+        search: search as string,
+        sortBy: sortBy as 'downloads' | 'rating' | 'year' | 'title',
+        page: parseInt(page as string),
+        limit: parseInt(limit as string),
+      });
+
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch ROMs" });
+    }
+  });
+
+  // Get ROM by console and slug
+  app.get("/api/roms/:console/:slug", async (req, res) => {
+    try {
+      const { console, slug } = req.params;
+      const game = await storage.getGameBySlug(console, slug);
+      if (!game) {
+        return res.status(404).json({ error: "ROM not found" });
+      }
+      res.json(game);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch ROM" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -73,8 +73,8 @@ export interface GameData {
   fileName: string;
   size: string;
   downloadUrl: string;
-  description?: string;
-  longDescription?: string;
+  description?: string | null;
+  longDescription?: string | null;
   reviewCount: number;
 }
 

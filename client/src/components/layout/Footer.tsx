@@ -62,6 +62,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/roms" className="hover:text-primary transition-colors" data-testid="link-browse-roms">
+                  Browse ROMs
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="hover:text-primary transition-colors" data-testid="link-random-game">
                   Random Game
                 </a>
