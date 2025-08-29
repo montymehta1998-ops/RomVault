@@ -26,20 +26,7 @@ export default function Home() {
     }
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="hero-gradient rounded-2xl p-12 text-center text-white mb-12">
-          <Skeleton className="h-16 w-96 mx-auto mb-4 bg-white/20" />
-          <Skeleton className="h-8 w-full max-w-3xl mx-auto mb-8 bg-white/20" />
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Skeleton className="h-12 w-48 bg-white/20" />
-            <Skeleton className="h-12 w-48 bg-white/20" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Don't show loading for the entire page - show hero immediately
 
   if (!romData) {
     return (
@@ -53,35 +40,39 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-12">
-      {/* Hero Section */}
-      <section className="hero-gradient rounded-2xl p-12 text-center">
-        <h1 className="text-2xl md:text-4xl font-bold mb-4 text-white" data-testid="text-hero-title">
-          Emulator Games | Download ROMs & Emulators For Free (2025)
-        </h1>
-        <p className="text-lg md:text-xl text-white/95 mb-8 max-w-3xl mx-auto" data-testid="text-hero-description">
-          Download 100% working ROMs and emulators only at Emulator-Games.net in 2025. Emulator Games offer Free classic games to play offline.
-          Download ROMs PS3, GBA, PS1, SNES, N64, PS2, and more. Enjoy retro gaming easily at Emulator Games.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/all-consoles">
-            <button 
-              className="px-8 py-3 bg-white text-purple-700 font-semibold rounded-lg hover:bg-white/90 transition-colors shadow-lg"
-              data-testid="button-browse-categories"
-            >
-              Browse Categories
-            </button>
-          </Link>
-          <Link to="/roms">
-            <button 
-              className="px-8 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
-              data-testid="button-popular-games"
-            >
-              Popular Games
-            </button>
-          </Link>
+    <div className="space-y-12">
+      {/* Hero Section - Full Width */}
+      <section className="hero-gradient hero-fullwidth py-16 px-4 text-center">
+        <div className="container mx-auto max-w-4xl">
+          <h1 className="text-2xl md:text-4xl font-bold mb-4" data-testid="text-hero-title">
+            Emulator Games | Download ROMs & Emulators For Free (2025)
+          </h1>
+          <p className="text-lg md:text-xl mb-8 opacity-80 max-w-3xl mx-auto" data-testid="text-hero-description">
+            Download 100% working ROMs and emulators only at Emulator-Games.net in 2025. Emulator Games offer Free classic games to play offline.
+            Download ROMs PS3, GBA, PS1, SNES, N64, PS2, and more. Enjoy retro gaming easily at Emulator Games.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/all-consoles">
+              <button 
+                className="px-8 py-3 bg-white text-sky-800 font-semibold rounded-lg hover:bg-white/90 transition-colors shadow-lg"
+                data-testid="button-browse-categories"
+              >
+                Browse Categories
+              </button>
+            </Link>
+            <Link to="/roms">
+              <button 
+                className="px-8 py-3 border-2 border-sky-800 text-sky-800 bg-white/20 font-semibold rounded-lg hover:bg-white/30 transition-colors"
+                data-testid="button-popular-games"
+              >
+                Popular Games
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
+
+      <div className="container mx-auto px-4 space-y-12">
 
       {/* Popular Games Section */}
       <section>
@@ -339,6 +330,7 @@ export default function Home() {
           Emulator Games is the ultimate hub for retro gaming enthusiasts in 2025. With its extensive library of ROMs and emulators, user-friendly interface, and commitment to safety, the platform delivers an unmatched gaming experience. Whether you're revisiting childhood favorites or exploring classics for the first time, EmulatorGames.net has everything you need. Visit the website today and start your journey into the world of retro gaming!
         </p>
       </section>
+      </div>
     </div>
   );
 }
