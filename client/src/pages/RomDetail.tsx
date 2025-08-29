@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { ArrowLeft, Download } from "lucide-react";
@@ -26,6 +27,18 @@ export default function RomDetail() {
       return response.json();
     },
   });
+
+  // Set SEO meta tags
+  useEffect(() => {
+    if (game) {
+      document.title = `${game.title} Download - ${game.platform} Roms - EmulatorGames.Net`;
+      
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', getGameDescription(game));
+      }
+    }
+  }, [game]);
 
   if (!match || !params?.console || !params?.slug) {
     return (
@@ -106,52 +119,16 @@ export default function RomDetail() {
       return game.description;
     }
 
-    // Generate a description based on the game's properties
-    const platformDescriptions: Record<string, string> = {
-      'Nintendo Entertainment System': 'classic 8-bit Nintendo console',
-      'Super Nintendo Entertainment System': 'legendary 16-bit Super Nintendo system',
-      'Game Boy': 'iconic portable handheld gaming device',
-      'Game Boy Color': 'enhanced portable color handheld system',
-      'Game Boy Advance': 'advanced 32-bit portable gaming console',
-      'Nintendo 64': 'revolutionary 64-bit 3D gaming platform',
-      'GameCube': 'compact cube-shaped Nintendo console',
-      'Nintendo DS': 'dual-screen portable gaming system',
-      'Nintendo Wii': 'motion-controlled gaming console',
-      'PlayStation': 'groundbreaking 32-bit gaming console',
-      'PlayStation 2': 'best-selling video game console of all time',
-      'PlayStation Portable': 'advanced portable multimedia device',
-      'Sega Genesis': 'classic 16-bit Sega gaming console',
-      'Sega Master System': 'classic 8-bit Sega gaming system',
-      'Sega Game Gear': 'portable color handheld gaming device',
-      'Atari 2600': 'legendary vintage gaming console',
-      'Arcade (MAME)': 'classic arcade gaming experience'
-    };
-
-    const categoryDescriptions: Record<string, string> = {
-      'Action': 'fast-paced action gameplay',
-      'Adventure': 'immersive adventure experience',
-      'Puzzle': 'challenging puzzle mechanics',
-      'RPG': 'rich role-playing adventure',
-      'Sports': 'exciting sports simulation',
-      'Racing': 'thrilling racing action',
-      'Fighting': 'intense combat gameplay',
-      'Shooter': 'action-packed shooting gameplay',
-      'Platform': 'classic platforming adventure',
-      'Other': 'unique gaming experience'
-    };
-
-    const platformDesc = platformDescriptions[game.platform] || 'retro gaming platform';
-    const categoryDesc = categoryDescriptions[game.category] || 'gaming experience';
+    // Generate description following the requested format
+    const downloadsFormatted = game.downloads >= 1000 
+      ? `${(game.downloads / 1000).toFixed(0)}K` 
+      : game.downloads.toString();
     
-    const baseDescription = `Experience "${game.title}" on the ${platformDesc}. This ${game.category.toLowerCase()} title offers ${categoryDesc} that defined gaming in ${game.year}.`;
+    const categoryDesc = game.category.toLowerCase();
     
-    const additionalInfo = game.downloads > 100000 
-      ? ` With over ${(game.downloads / 1000).toFixed(0)}K downloads, this is a highly popular classic that continues to captivate retro gaming enthusiasts.`
-      : ` Join thousands of retro gaming fans who have already discovered this ${game.region} classic.`;
+    const description = `Download ${game.title} Rom is available to play for ${game.platform} console. This game is the ${game.region} version at EmulatorGames.Net exclusively. Download ${game.title} ROM and use it with an emulator and Play this ${game.platform} game on desktop PC, mobile, and tablets in maximum quality. This ${categoryDesc} title offers ${categoryDesc} gameplay that defined gaming in ${game.year}. With over ${downloadsFormatted} downloads, this is a highly popular classic that continues to captivate retro gaming enthusiasts. The ROM file is compatible with ${game.platform} emulators and provides an authentic gaming experience true to the original ${game.year} release.`;
     
-    const compatibilityInfo = ` The ROM file is compatible with ${game.platform} emulators and provides an authentic gaming experience true to the original ${game.year} release.`;
-    
-    return baseDescription + additionalInfo + compatibilityInfo;
+    return description;
   };
 
   return (
@@ -215,24 +192,6 @@ export default function RomDetail() {
                   <div>
                     <div className="text-xs text-muted-foreground">File Size</div>
                     <div className="font-medium text-sm" data-testid="text-file-size">{game.size}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Console</div>
-                    <div className="font-medium text-sm" data-testid="text-console">{game.console}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Region</div>
-                    <div className="font-medium text-sm" data-testid="text-region">{game.region}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Category</div>
-                    <div className="font-medium text-sm" data-testid="text-category">{game.category}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Downloads</div>
-                    <div className="font-medium text-sm" data-testid="text-download-count">
-                      {game.downloads.toLocaleString()}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -337,7 +296,6 @@ export default function RomDetail() {
               
               {/* Game Description */}
               <div className="mt-6 pt-6 border-t">
-                <h4 className="text-lg font-semibold mb-3" data-testid="text-game-description-title">About This Game</h4>
                 <div className="text-muted-foreground leading-relaxed" data-testid="text-game-description">
                   {getGameDescription(game)}
                 </div>

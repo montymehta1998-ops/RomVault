@@ -320,8 +320,8 @@ export default function Roms() {
             <div key={i} className="loading-skeleton rounded-lg h-80" />
           ))
         ) : romsData && romsData.games.length > 0 ? (
-          romsData.games.map(game => (
-            <GameCard key={game.id} game={game} />
+          romsData.games.map((game, index) => (
+            <GameCard key={`${game.id}-${game.platform}-${index}`} game={game} />
           ))
         ) : (
           <div className="col-span-full text-center py-12">

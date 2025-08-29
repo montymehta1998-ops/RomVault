@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
-import { ArrowLeft, Download, Shield, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Download, Shield, AlertTriangle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -10,6 +10,8 @@ import type { GameData } from "@shared/schema";
 
 export default function RomDownload() {
   const [match, params] = useRoute("/roms/:console/:slug/download");
+  const [countdown, setCountdown] = useState(5);
+  const [showDownload, setShowDownload] = useState(false);
   
   const { data: game, isLoading } = useQuery<GameData>({
     queryKey: ["/api/roms", params?.console, params?.slug],
@@ -24,9 +26,29 @@ export default function RomDownload() {
   useEffect(() => {
     // Set page title for SEO
     if (game) {
-      document.title = `Download ${game.title} ROM - RetroROMs Archive`;
+      document.title = `${game.title} Download - ${game.platform} Roms - EmulatorGames.Net`;
+      
+      // Set meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', 
+          `Download ${game.title} ROM for ${game.platform} console. This ${game.region} version game offers ${game.category.toLowerCase()} gameplay. Free download with over ${(game.downloads / 1000).toFixed(0)}K downloads. Compatible with ${game.platform} emulators.`
+        );
+      }
     }
   }, [game]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (game && !showDownload && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      setShowDownload(true);
+    }
+  }, [game, countdown, showDownload]);
 
   if (!match || !params?.console || !params?.slug) {
     return (
@@ -150,16 +172,34 @@ export default function RomDownload() {
               </div>
             </div>
 
-            {/* Download Button */}
-            <Button 
-              onClick={handleDirectDownload}
-              className="w-full py-4 text-lg font-semibold"
-              size="lg"
-              data-testid="button-start-download"
-            >
-              <Download className="mr-3 h-5 w-5" />
-              Start Download
-            </Button>
+            {/* Download Button or Timer */}
+            {showDownload ? (
+              <Button 
+                onClick={handleDirectDownload}
+                className="w-full py-4 text-lg font-semibold"
+                size="lg"
+                data-testid="button-start-download"
+              >
+                <Download className="mr-3 h-5 w-5" />
+                Start Download
+              </Button>
+            ) : (
+              <div className="text-center py-8">
+                <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
+                <div className="text-2xl font-bold text-primary mb-2" data-testid="text-countdown">
+                  {countdown}
+                </div>
+                <p className="text-muted-foreground">
+                  Preparing your download... Please wait {countdown} second{countdown !== 1 ? 's' : ''}
+                </p>
+                <div className="w-full bg-muted rounded-full h-2 mt-4">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-1000"
+                    style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
 
             {/* Security Notice */}
             <div className="flex items-start space-x-3 p-4 bg-primary/5 rounded-lg">
