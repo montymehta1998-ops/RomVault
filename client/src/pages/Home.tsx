@@ -56,17 +56,17 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8 space-y-12">
       {/* Hero Section */}
       <section className="hero-gradient rounded-2xl p-12 text-center">
-        <h1 className="text-2xl md:text-4xl font-bold mb-4 text-primary-foreground" data-testid="text-hero-title">
+        <h1 className="text-2xl md:text-4xl font-bold mb-4 text-white" data-testid="text-hero-title">
           Emulator Games | Download ROMs & Emulators For Free (2025)
         </h1>
-        <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto" data-testid="text-hero-description">
+        <p className="text-lg md:text-xl text-white/95 mb-8 max-w-3xl mx-auto" data-testid="text-hero-description">
           Download 100% working ROMs and emulators only at Emulator-Games.net in 2025. Emulator Games offer Free classic games to play offline.
           Download ROMs PS3, GBA, PS1, SNES, N64, PS2, and more. Enjoy retro gaming easily at Emulator Games.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/all-consoles">
             <button 
-              className="px-8 py-3 bg-background text-foreground font-semibold rounded-lg hover:bg-background/90 border border-background/20 transition-colors"
+              className="px-8 py-3 bg-white text-purple-700 font-semibold rounded-lg hover:bg-white/90 transition-colors shadow-lg"
               data-testid="button-browse-categories"
             >
               Browse Categories
@@ -74,12 +74,34 @@ export default function Home() {
           </Link>
           <Link to="/roms">
             <button 
-              className="px-8 py-3 border-2 border-primary-foreground/30 text-primary-foreground font-semibold rounded-lg hover:bg-primary-foreground/10 transition-colors"
+              className="px-8 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
               data-testid="button-popular-games"
             >
               Popular Games
             </button>
           </Link>
+        </div>
+      </section>
+
+      {/* Popular Games Section */}
+      <section>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-foreground" data-testid="text-popular-games">Popular Games</h2>
+          <Link to="/roms" className="text-primary hover:underline" data-testid="link-view-all-popular">
+            View All →
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {isLoadingPopular ? (
+            Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="loading-skeleton rounded-lg h-80" />
+            ))
+          ) : (
+            popularGames?.slice(0, 10).map((game, index) => (
+              <GameCard key={`${game.id}-${game.platform}-${index}`} game={game} />
+            ))
+          )}
         </div>
       </section>
 
@@ -89,47 +111,25 @@ export default function Home() {
           <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-total-games">
             {romData.stats.totalGames.toLocaleString()}
           </div>
-          <div className="text-muted-foreground">Total Games</div>
+          <div className="text-foreground/80">Total Games</div>
         </div>
         <div className="bg-card border border-border rounded-lg p-6 text-center">
           <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-platforms">
             {romData.stats.totalCategories}
           </div>
-          <div className="text-muted-foreground">Platforms</div>
+          <div className="text-foreground/80">Platforms</div>
         </div>
         <div className="bg-card border border-border rounded-lg p-6 text-center">
           <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-downloads">
             {romData.stats.totalDownloads}
           </div>
-          <div className="text-muted-foreground">Downloads</div>
+          <div className="text-foreground/80">Downloads</div>
         </div>
         <div className="bg-card border border-border rounded-lg p-6 text-center">
           <div className="text-3xl font-bold text-primary mb-2" data-testid="text-stat-active-users">
             {romData.stats.activeUsers}
           </div>
-          <div className="text-muted-foreground">Active Users</div>
-        </div>
-      </section>
-
-      {/* Popular Games Section - Limited to 20-30 games */}
-      <section>
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold" data-testid="text-popular-games">Popular Games</h2>
-          <Link to="/roms" className="text-primary hover:underline" data-testid="link-view-all-popular">
-            View All →
-          </Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {isLoadingPopular ? (
-            Array.from({ length: 20 }).map((_, i) => (
-              <div key={i} className="loading-skeleton rounded-lg h-80" />
-            ))
-          ) : (
-            popularGames?.slice(0, 24).map((game, index) => (
-              <GameCard key={`${game.id}-${game.platform}-${index}`} game={game} />
-            ))
-          )}
+          <div className="text-foreground/80">Active Users</div>
         </div>
       </section>
 
