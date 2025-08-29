@@ -12,6 +12,7 @@ import Category from "@/pages/Category";
 import Roms from "@/pages/Roms";
 import RomDetail from "@/pages/RomDetail";
 import RomDownload from "@/pages/RomDownload";
+import AllConsoles from "@/pages/AllConsoles";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/all-consoles" component={AllConsoles} />
           <Route path="/category/:id" component={Category} />
           <Route path="/roms" component={Roms} />
           <Route path="/search" component={Roms} />
