@@ -3,7 +3,7 @@ import { storage } from '../storage.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    console.log('Fetching ROMs with params:', req.query);
+    console.log('Fetching ROMs with params - index route:', req.query, req.url);
     const {
       console: consoleParam,
       category,
