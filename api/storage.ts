@@ -644,7 +644,7 @@ export class MemStorage implements IStorage {
       .slice(0, limit);
   }
 
-  async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
+  async getGameBySlug(consoleName: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
     
     // Mapping for console keys to full descriptive IDs with -roms suffix
@@ -673,7 +673,7 @@ export class MemStorage implements IStorage {
     };
     
     // Create URL-friendly console ID with descriptive names and -roms suffix
-    const consoleId = consoleIdMapping[console] || `${console.replace(/_/g, '-')}-roms`;
+    const consoleId = consoleIdMapping[consoleName] || `${consoleName.replace(/_/g, '-')}-roms`;
     
     console.log(`Searching for game with slug: ${slug} and consoleId: ${consoleId}`);
     
@@ -686,12 +686,14 @@ export class MemStorage implements IStorage {
       const slugMatches = data.games.filter(game => game.id === slug);
       console.log(`Found ${slugMatches.length} games with matching slug`);
       if (slugMatches.length > 0) {
-        console.log(`Sample slug matches:`, slugMatches.slice(0, 3).map(g => ({
+        // Create a simple array of game info for logging
+        const gameInfo = slugMatches.slice(0, 3).map(g => ({
           id: g.id,
           title: g.title,
           categoryId: g.categoryId,
           console: g.console
-        })));
+        }));
+        console.log(`Sample slug matches:`, gameInfo);
       }
     } else {
       console.log(`Found game: ${foundGame.title}`);
