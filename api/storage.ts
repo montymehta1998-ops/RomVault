@@ -120,6 +120,8 @@ export class MemStorage implements IStorage {
     if (!this.romData) {
       try {
         console.log(`Attempting to load data from: ${this.dataDir}`);
+        console.log(`Current working directory: ${process.cwd()}`);
+        console.log(`__dirname: ${__dirname}`);
 
         // Check if data directory exists
         try {
@@ -141,10 +143,10 @@ export class MemStorage implements IStorage {
 
         // Get all JSON files in data directory
         const files = await fs.readdir(this.dataDir);
-        console.log(`Found ${files.length} files in data directory`);
+        console.log(`Found ${files.length} files in data directory:`, files);
 
         const jsonFiles = files.filter(file => file.endsWith('_roms.json'));
-        console.log(`Found ${jsonFiles.length} JSON files`);
+        console.log(`Found ${jsonFiles.length} JSON files:`, jsonFiles);
 
         if (jsonFiles.length === 0) {
           console.error(`No JSON files found in ${this.dataDir}`);

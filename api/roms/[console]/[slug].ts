@@ -7,10 +7,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { console: consoleParam, slug } = req.query;
     
     if (!consoleParam || typeof consoleParam !== 'string') {
+      console.log('Invalid console parameter:', consoleParam);
       return res.status(400).json({ error: 'Console parameter is required' });
     }
     
     if (!slug || typeof slug !== 'string') {
+      console.log('Invalid slug parameter:', slug);
       return res.status(400).json({ error: 'Slug parameter is required' });
     }
     
@@ -25,16 +27,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.log(`ROM with console ${consoleParam} and slug ${slug} not found`);
       // Try to get some info about what's available
       try {
+        console.log('Attempting to load ROM data for debugging...');
         const allData = await storage.getRomData();
-        const matchingConsoleGames = allData.games.filter(g =>
-          g.console.toLowerCase() === consoleParam.toLowerCase()
-        );
-        console.log(`Found ${matchingConsoleGames.length} games for console ${consoleParam}`);
-        if (matchingConsoleGames.length > 0) {
-          console.log(`Sample games for ${consoleParam}:`, matchingConsoleGames.slice(0, 3).map(g => ({
+        console.log(`Loaded ${allData.games.length} total games, ${allData.categories.length} categories`);
+        
+        // Check if we have any data at all
+        if (allData.games.length === 0) {
+          console.log('ERROR: No games loaded at all!');
+        }
+        
+        // Look for games with the same slug
+        const slugMatches = allData.games.filter(g => g.id === slug);
+        console.log(`Found ${slugMatches.length} games with matching slug '${slug}'`);
+        if (slugMatches.length > 0) {
+          console.log(`Sample slug matches:`, slugMatches.slice(0, 3).map(g => ({
             id: g.id,
             title: g.title,
-            categoryId: g.categoryId
+            categoryId: g.categoryId,
+            console: g.console
+          })));
+        }
+        
+        // Look for games with the same console
+        const consoleMatches = allData.games.filter(g =>
+          g.console.toLowerCase() === consoleParam.toLowerCase() ||
+          g.categoryId === consoleParam
+        );
+        console.log(`Found ${consoleMatches.length} games for console '${consoleParam}'`);
+        if (consoleMatches.length > 0) {
+          console.log(`Sample console matches:`, consoleMatches.slice(0, 3).map(g => ({
+            id: g.id,
+            title: g.title,
+            categoryId: g.categoryId,
+            console: g.console
           })));
         }
       } catch (infoError) {
