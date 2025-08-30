@@ -525,31 +525,9 @@ export class MemStorage implements IStorage {
 
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
-    // Normalize console name for matching (handle both underscore and hyphen formats)
-    const normalizedConsole = console.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
     
-    // First try to match by categoryId (which has the proper hyphen format)
-    let game = data.games.find(game => {
-      return game.categoryId === normalizedConsole && game.id === slug;
-    });
-    
-    // If not found, try to match by generated slug from filename
-    if (!game) {
-      game = data.games.find(game => {
-        return game.categoryId === normalizedConsole && this.createSlug(game.fileName) === slug;
-      });
-    }
-    
-    // Fallback: try matching by console name with underscore normalization
-    if (!game) {
-      const fallbackConsole = console.toLowerCase().replace(/-/g, '_').replace(/\s+/g, '_');
-      game = data.games.find(game => {
-        const gameConsole = game.console.toLowerCase().replace(/-/g, '_').replace(/\s+/g, '_');
-        return gameConsole === fallbackConsole && game.id === slug;
-      });
-    }
-    
-    return game;
+    // Find the game by ID (slug) - the simplest approach
+    return data.games.find(game => game.id === slug);
   }
 
   async getConsoles(): Promise<string[]> {
