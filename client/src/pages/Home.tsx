@@ -14,6 +14,11 @@ export default function Home() {
 
   const { data: popularGames, isLoading: isLoadingPopular } = useQuery<GameData[]>({
     queryKey: ["/api/popular"],
+    queryFn: async () => {
+      const response = await fetch("/api/popular?limit=10");
+      if (!response.ok) throw new Error('Failed to fetch popular games');
+      return response.json();
+    },
   });
 
   // Set SEO meta tags
