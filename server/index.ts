@@ -64,14 +64,38 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Export the handler for Vercel
-export default app;
+export default async function handler(req: any, res: any) {
+  return new Promise<void>((resolve, reject) => {
+    // Patch the response object to work with Vercel
+    const originalEnd = res.end;
+    res.end = function (...args: any[]) {
+      // Call the original end method
+      const result = originalEnd.apply(this, args);
+      // Resolve the promise to indicate the request is finished
+      resolve();
+      return result;
+    };
+    
+    // Handle errors
+    res.once('error', reject);
+    
+    // Pass the request to our Express app
+    app(req, res, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        // If no error and the response hasn't been sent, send a 404
+        if (!res.headersSent) {
+          res.status(404).send('Not Found');
+          resolve();
+        }
+      }
+    });
+  });
+}
 
-// Handle Vercel serverless environment
-if (process.env.VERCEL) {
-  // In Vercel environment, we don't need to start the server manually
-  // Vercel will handle this for us
-  console.log("Running in Vercel environment");
-} else {
+// For local development, we still need to start the server
+if (!process.env.VERCEL) {
   // For local development
   (async () => {
     try {
