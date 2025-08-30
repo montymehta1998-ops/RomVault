@@ -105,6 +105,7 @@ export default function Roms() {
         'n-gage': 'N-Gage',
         'neo-geo-pocket': 'NGP',
         'neo-geo': 'Neo Geo',
+        'new-geo': 'Neo Geo',
         'nintendo-64': 'N64',
         'n64': 'N64',
         'nintendo-ds': 'NDS',
@@ -165,13 +166,7 @@ export default function Roms() {
         'xbox-one': 'Xbox One',
         'xbox-360': 'Xbox 360',
         'z-machine': 'Z-Machine',
-        'zx-spectrum': 'ZX Spectrum',
-        'zx81': 'ZX81',
-        '3do': '3DO',
-        '3ds': '3DS',
-        'dos': 'Dos',
-        'mame': 'MAME',
-        'scummvm': 'ScummVM'
+        'zx-spectrum': 'ZX Spectrum'
       };
       
       const mappedConsoleName = consoleNameMapping[consoleName] || 
