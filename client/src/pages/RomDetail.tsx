@@ -14,6 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import type { GameData } from "@shared/schema";
+import { AdSense } from "@/components/AdSense";
 
 export default function RomDetail() {
   const [match, params] = useRoute("/roms/:console/:slug");
@@ -195,6 +196,12 @@ export default function RomDetail() {
                   </div>
                 </div>
               </div>
+              
+              {/* AdSense Ad */}
+              <div className="mb-6">
+                <AdSense adSlot="1048373308" />
+              </div>
+              
               <Button 
                 onClick={handleDownload}
                 className="w-full font-semibold"

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { GameCard } from "@/components/game/GameCard";
 import { SearchBar } from "@/components/game/SearchBar";
+import { AdSense } from "@/components/AdSense";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { RomData, GameData } from "@shared/schema";
 
@@ -68,6 +69,11 @@ export default function Home() {
               placeholder="Search for games, consoles, or emulators..."
               className="w-full"
             />
+          </div>
+          
+          {/* AdSense Ad */}
+          <div className="w-full max-w-2xl mx-auto mt-8">
+            <AdSense adSlot="1048373308" />
           </div>
         </div>
       </section>
