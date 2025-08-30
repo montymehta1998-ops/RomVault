@@ -1,4 +1,9 @@
 {
   "version": 2,
-  "outputDirectory": "dist/public"
+  "outputDirectory": "dist/public",
+  "functions": {
+    "api/**/*.ts": {
+      "includeFiles": "data/**"
+    }
+  }
 }

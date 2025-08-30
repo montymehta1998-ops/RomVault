@@ -70,23 +70,33 @@ export class MemStorage implements IStorage {
     // Try multiple possible locations
     const possiblePaths = [
       path.resolve(process.cwd(), "data"),
-      path.resolve(__dirname, "..", "..", "data"),
       path.resolve(__dirname, "..", "data"),
-      "/var/task/data" // Vercel's deployment directory
+      "/var/task/data", // Vercel's deployment directory
+      path.resolve(process.cwd(), "..", "data"), // One level up
+      path.resolve(process.cwd(), "..", "..", "data") // Two levels up
     ];
-    
+
+    console.log(`Current working directory: ${process.cwd()}`);
+    console.log(`__dirname: ${__dirname}`);
+
     for (const dataPath of possiblePaths) {
       try {
-        if (fsSync.readdirSync(dataPath)) {
-          this.dataDir = dataPath;
-          console.log(`Found data directory at: ${dataPath}`);
-          break;
+        console.log(`Trying data path: ${dataPath}`);
+        const stat = fsSync.statSync(dataPath);
+        if (stat.isDirectory()) {
+          const files = fsSync.readdirSync(dataPath);
+          if (files.length > 0) {
+            this.dataDir = dataPath;
+            console.log(`Found data directory at: ${dataPath} with ${files.length} files`);
+            break;
+          }
         }
       } catch (error) {
+        console.log(`Failed to access ${dataPath}:`, error.message);
         // Continue to next path
       }
     }
-    
+
     if (!this.dataDir) {
       // Fallback to default
       this.dataDir = path.resolve(process.cwd(), "data");
@@ -98,7 +108,7 @@ export class MemStorage implements IStorage {
     if (!this.romData) {
       try {
         console.log(`Attempting to load data from: ${this.dataDir}`);
-        
+
         // Check if data directory exists
         try {
           const stat = await fs.stat(this.dataDir);
@@ -109,14 +119,19 @@ export class MemStorage implements IStorage {
           console.error(`Data directory does not exist or is not accessible: ${this.dataDir}`, error);
           throw new Error(`Data directory not found: ${this.dataDir}`);
         }
-        
+
         // Get all JSON files in data directory
         const files = await fs.readdir(this.dataDir);
         console.log(`Found ${files.length} files in data directory`);
-        
+
         const jsonFiles = files.filter(file => file.endsWith('_roms.json'));
         console.log(`Found ${jsonFiles.length} JSON files`);
-        
+
+        if (jsonFiles.length === 0) {
+          console.error(`No JSON files found in ${this.dataDir}`);
+          throw new Error(`No JSON files found in data directory`);
+        }
+
         let allGames: GameData[] = [];
         const categories: CategoryData[] = [];
         const consoleMap = new Map<string, string>();
@@ -425,11 +440,15 @@ export class MemStorage implements IStorage {
           // Create URL-friendly console ID with descriptive names and -roms suffix
           const consoleId = consoleIdMapping[consoleKey] || `${consoleKey.replace(/_/g, '-')}-roms`;
           const filePath = path.join(this.dataDir, file);
-          
+
           try {
+            console.log(`Processing file: ${filePath}`);
             const fileData = await fs.readFile(filePath, "utf-8");
+            console.log(`File ${file} size: ${fileData.length} characters`);
+
             const games = JSON.parse(fileData) as any[];
-            
+            console.log(`Parsed ${games.length} games from ${file}`);
+
             // Convert each game to our format
             const convertedGames: GameData[] = games.map((game, index) => {
               const downloads = parseInt(game.downloads) || 0;
@@ -440,7 +459,7 @@ export class MemStorage implements IStorage {
               else if (downloads > 150000) rating = 4.0 + Math.random() * 0.5;
               else if (downloads > 50000) rating = 3.5 + Math.random() * 0.5;
               else rating = 3.0 + Math.random() * 0.7;
-              
+
               return {
                 id: game.slug || `${consoleKey}-${index}`,
                 title: game.title,
@@ -463,11 +482,12 @@ export class MemStorage implements IStorage {
             });
 
             allGames.push(...convertedGames);
-            
+            console.log(`Added ${convertedGames.length} games from ${file}`);
+
             // Create category for this console - use actual game count for display, download count for sorting
             const actualGameCount = actualGameCounts[consoleKey] || convertedGames.length;
             const downloadCount = realDownloadCounts[consoleKey] || 0;
-            
+
             categories.push({
               id: consoleId,
               name: `${consoleName} ROMs`,
@@ -558,7 +578,7 @@ export class MemStorage implements IStorage {
     // Filter by search term
     if (params.search) {
       const searchTerm = params.search.toLowerCase();
-      games = games.filter(game => 
+      games = games.filter(game =>
         game.title.toLowerCase().includes(searchTerm) ||
         game.platform.toLowerCase().includes(searchTerm)
       );
@@ -583,7 +603,7 @@ export class MemStorage implements IStorage {
     }
 
     const total = games.length;
-    
+
     // Pagination
     if (params.page && params.limit) {
       const start = (params.page - 1) * params.limit;
@@ -607,7 +627,7 @@ export class MemStorage implements IStorage {
 
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
-    
+
     // Find the game by ID (slug) - the simplest approach
     return data.games.find(game => game.id === slug);
   }
