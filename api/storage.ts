@@ -1,6 +1,11 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name in ES module compatible way
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Define the data types
 export interface GameData {
@@ -648,4 +653,5 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Create storage instance
 export const storage = new MemStorage();
