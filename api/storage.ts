@@ -632,9 +632,10 @@ export class MemStorage implements IStorage {
 
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
-
-    // Find the game by ID (slug) - the simplest approach
-    return data.games.find(game => game.id === slug);
+    
+    // Find the game by ID (slug) and console category ID
+    // The console parameter should match the categoryId of the game
+    return data.games.find(game => game.id === slug && game.categoryId === console);
   }
 
   async getConsoles(): Promise<string[]> {
