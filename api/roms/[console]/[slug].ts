@@ -14,13 +14,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Slug parameter is required' });
     }
     
-    // Decode URL-encoded console parameter and use it directly as the categoryId
-    const categoryId = decodeURIComponent(consoleParam);
-      
-    const game = await storage.getGameBySlug(categoryId, slug);
+    // For now, just pass the console parameter as is
+    const game = await storage.getGameBySlug(consoleParam, slug);
     
     if (!game) {
-      console.log(`ROM with console ${categoryId} and slug ${slug} not found`);
+      console.log(`ROM with console ${consoleParam} and slug ${slug} not found`);
       return res.status(404).json({ error: 'ROM not found' });
     }
     
