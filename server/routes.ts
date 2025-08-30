@@ -126,11 +126,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/roms/:console/:slug", async (req, res) => {
     try {
       const { console: consoleParam, slug } = req.params;
-      // Decode URL-encoded console parameter and remove -roms suffix if present
-      const decodedConsole = decodeURIComponent(consoleParam);
-      const console = decodedConsole.endsWith('-roms') ? 
-        decodedConsole.slice(0, -5) : decodedConsole;
-      const game = await storage.getGameBySlug(console, slug);
+      // Use the console parameter directly as the categoryId
+      const categoryId = decodeURIComponent(consoleParam);
+      const game = await storage.getGameBySlug(categoryId, slug);
       if (!game) {
         return res.status(404).json({ error: "ROM not found" });
       }
