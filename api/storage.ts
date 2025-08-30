@@ -633,9 +633,36 @@ export class MemStorage implements IStorage {
   async getGameBySlug(console: string, slug: string): Promise<GameData | undefined> {
     const data = await this.loadData();
     
+    // Mapping for console keys to full descriptive IDs with -roms suffix
+    const consoleIdMapping: Record<string, string> = {
+      'psp': 'playstation-portable-roms',
+      'ps2': 'playstation-2-roms',
+      '3ds': 'nintendo-3ds-roms',
+      'gba': 'gameboy-advance-roms',
+      'n64': 'nintendo-64-roms',
+      'nds': 'nintendo-ds-roms',
+      'ps3': 'playstation-3-roms',
+      'wii': 'nintendo-wii-roms',
+      'snes': 'super-nintendo-roms',
+      'nes': 'nintendo-roms',
+      'playstation': 'playstation-roms',
+      'gamecube': 'nintendo-gamecube-roms',
+      'switch': 'nintendo-switch-roms',
+      'xbox': 'microsoft-xbox-roms',
+      'xbox_one': 'microsoft-xbox-one-roms',
+      'gameboy': 'gameboy-roms',
+      'gameboy_color': 'gameboy-color-roms',
+      'mame': 'arcade-mame-roms',
+      'playstation_vita': 'playstation-vita-roms',
+      'playstation_4': 'playstation-4-roms',
+      'nintendo_wii_u': 'nintendo-wii-u-roms'
+    };
+    
+    // Create URL-friendly console ID with descriptive names and -roms suffix
+    const consoleId = consoleIdMapping[console] || `${console.replace(/_/g, '-')}-roms`;
+    
     // Find the game by ID (slug) and console category ID
-    // For now, let's just find by slug to see if that works
-    return data.games.find(game => game.id === slug);
+    return data.games.find(game => game.id === slug && game.categoryId === consoleId);
   }
 
   async getConsoles(): Promise<string[]> {
