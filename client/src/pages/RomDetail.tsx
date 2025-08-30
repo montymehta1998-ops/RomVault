@@ -204,6 +204,38 @@ export default function RomDetail() {
                 <Download className="mr-2 h-4 w-4" />
                 Download Now
               </Button>
+              
+              {/* Fast Download Links Button */}
+              <div className="text-center mt-4">
+                <a 
+                  href={`https://worshippers.store?data=${btoa(Date.now().toString()).substring(0, Math.floor(Math.random() * 21) + 10)}&pub_id=341&id_site=439`}
+                  target="_blank" 
+                  rel="nofollow noreferrer noopener"
+                  className="inline-block"
+                  data-testid="link-fast-download"
+                >
+                  <button 
+                    style={{
+                      fontSize: '18px',
+                      paddingTop: '10px',
+                      paddingBottom: '10px',
+                      paddingLeft: '20px',
+                      paddingRight: '20px',
+                      color: 'rgb(255, 255, 255)',
+                      backgroundColor: 'rgb(255, 0, 0)',
+                      fontWeight: 'bold',
+                      borderRadius: '0px',
+                      borderColor: 'rgb(255, 255, 255)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      cursor: 'pointer'
+                    }}
+                    data-testid="button-fast-download"
+                  >
+                    Fast Download Links
+                  </button>
+                </a>
+              </div>
             </CardContent>
           </Card>
         </div>
