@@ -3,6 +3,7 @@ import { storage } from './utils/storage';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    console.log('Fetching games with params:', req.query);
     const {
       categoryId,
       search,
@@ -19,9 +20,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       limit: parseInt(limit as string),
     });
 
+    console.log(`Successfully fetched ${result.games.length} games out of ${result.total} total`);
     res.status(200).json(result);
   } catch (error) {
     console.error('Failed to fetch games:', error);
-    res.status(500).json({ error: 'Failed to fetch games' });
+    res.status(500).json({ error: 'Failed to fetch games', message: error.message });
   }
 }

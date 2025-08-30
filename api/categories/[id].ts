@@ -3,6 +3,7 @@ import { storage } from '../utils/storage';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    console.log('Fetching category with ID:', req.query.id);
     const { id } = req.query;
     
     if (!id || typeof id !== 'string') {
@@ -12,12 +13,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const category = await storage.getCategory(id);
     
     if (!category) {
+      console.log(`Category with ID ${id} not found`);
       return res.status(404).json({ error: 'Category not found' });
     }
     
+    console.log(`Successfully fetched category: ${category.name}`);
     res.status(200).json(category);
   } catch (error) {
     console.error('Failed to fetch category:', error);
-    res.status(500).json({ error: 'Failed to fetch category' });
+    res.status(500).json({ error: 'Failed to fetch category', message: error.message });
   }
 }

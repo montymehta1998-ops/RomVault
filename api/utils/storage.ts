@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 
 // Define the data types
@@ -65,16 +66,56 @@ export class MemStorage implements IStorage {
   private dataDir: string;
 
   constructor() {
-    // In Vercel, the data directory will be in the same directory as the function
-    this.dataDir = path.resolve(process.cwd(), "data");
+    // In Vercel, the data directory might be in a different location
+    // Try multiple possible locations
+    const possiblePaths = [
+      path.resolve(process.cwd(), "data"),
+      path.resolve(__dirname, "..", "..", "data"),
+      path.resolve(__dirname, "..", "data"),
+      "/var/task/data" // Vercel's deployment directory
+    ];
+    
+    for (const dataPath of possiblePaths) {
+      try {
+        if (fsSync.readdirSync(dataPath)) {
+          this.dataDir = dataPath;
+          console.log(`Found data directory at: ${dataPath}`);
+          break;
+        }
+      } catch (error) {
+        // Continue to next path
+      }
+    }
+    
+    if (!this.dataDir) {
+      // Fallback to default
+      this.dataDir = path.resolve(process.cwd(), "data");
+      console.log(`Using fallback data directory: ${this.dataDir}`);
+    }
   }
 
   private async loadData(): Promise<RomData> {
     if (!this.romData) {
       try {
+        console.log(`Attempting to load data from: ${this.dataDir}`);
+        
+        // Check if data directory exists
+        try {
+          const stat = await fs.stat(this.dataDir);
+          if (!stat.isDirectory()) {
+            throw new Error(`Data path is not a directory: ${this.dataDir}`);
+          }
+        } catch (error) {
+          console.error(`Data directory does not exist or is not accessible: ${this.dataDir}`, error);
+          throw new Error(`Data directory not found: ${this.dataDir}`);
+        }
+        
         // Get all JSON files in data directory
         const files = await fs.readdir(this.dataDir);
+        console.log(`Found ${files.length} files in data directory`);
+        
         const jsonFiles = files.filter(file => file.endsWith('_roms.json'));
+        console.log(`Found ${jsonFiles.length} JSON files`);
         
         let allGames: GameData[] = [];
         const categories: CategoryData[] = [];

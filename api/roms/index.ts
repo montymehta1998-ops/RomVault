@@ -3,8 +3,9 @@ import { storage } from '../utils/storage';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    console.log('Fetching ROMs with params:', req.query);
     const {
-      console,
+      console: consoleParam,
       category,
       search,
       sortBy,
@@ -13,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } = req.query;
 
     const result = await storage.getGames({
-      console: console as string,
+      console: consoleParam as string,
       category: category as string,
       search: search as string,
       sortBy: sortBy as 'downloads' | 'rating' | 'year' | 'title',
@@ -21,9 +22,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       limit: parseInt(limit as string),
     });
 
+    console.log(`Successfully fetched ${result.games.length} ROMs out of ${result.total} total`);
     res.status(200).json(result);
   } catch (error) {
     console.error('Failed to fetch ROMs:', error);
-    res.status(500).json({ error: 'Failed to fetch ROMs' });
+    res.status(500).json({ error: 'Failed to fetch ROMs', message: error.message });
   }
 }
