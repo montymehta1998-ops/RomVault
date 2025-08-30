@@ -150,7 +150,7 @@ export default function RomDetail() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={`/roms/${game.categoryId}-roms`} data-testid="link-breadcrumb-platform">{game.platform}</Link>
+              <Link to={`/roms/${game.categoryId}`} data-testid="link-breadcrumb-platform">{game.platform}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
