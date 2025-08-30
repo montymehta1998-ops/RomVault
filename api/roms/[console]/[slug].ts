@@ -62,6 +62,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             console: g.console
           })));
         }
+        
+        // Also look for partial matches
+        const partialMatches = allData.games.filter(g =>
+          g.id.includes(slug) ||
+          g.title.toLowerCase().includes(slug.replace(/-/g, ' '))
+        );
+        console.log(`Found ${partialMatches.length} games with partial matches to '${slug}'`);
+        if (partialMatches.length > 0) {
+          console.log(`Sample partial matches:`, partialMatches.slice(0, 3).map(g => ({
+            id: g.id,
+            title: g.title,
+            categoryId: g.categoryId,
+            console: g.console
+          })));
+        }
       } catch (infoError) {
         console.error('Failed to get additional info for debugging:', infoError);
       }

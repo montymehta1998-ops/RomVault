@@ -674,8 +674,17 @@ export class MemStorage implements IStorage {
       'nintendo_wii_u': 'nintendo-wii-u-roms'
     };
     
-    // Create URL-friendly console ID with descriptive names and -roms suffix
-    const consoleId = consoleIdMapping[consoleName] || `${consoleName.replace(/_/g, '-')}-roms`;
+    // Check if consoleName is already the full console ID
+    // This happens when the console parameter in the URL is the full ID (e.g., playstation-portable-roms)
+    // rather than the short key (e.g., psp)
+    let consoleId;
+    if (Object.values(consoleIdMapping).includes(consoleName)) {
+      // consoleName is already the full console ID
+      consoleId = consoleName;
+    } else {
+      // consoleName is the short key, map it to the full ID
+      consoleId = consoleIdMapping[consoleName] || `${consoleName.replace(/_/g, '-')}-roms`;
+    }
     
     console.log(`Searching for game with slug: ${slug} and consoleId: ${consoleId}`);
     
@@ -696,6 +705,32 @@ export class MemStorage implements IStorage {
           console: g.console
         }));
         console.log(`Sample slug matches:`, gameInfo);
+      }
+      
+      // Also check if there are any games for this console
+      const consoleGames = data.games.filter(game => game.categoryId === consoleId);
+      console.log(`Found ${consoleGames.length} games for consoleId: ${consoleId}`);
+      if (consoleGames.length > 0) {
+        console.log(`Sample console games:`, consoleGames.slice(0, 3).map(g => ({
+          id: g.id,
+          title: g.title,
+          categoryId: g.categoryId
+        })));
+      }
+      
+      // Let's also check if there are any games that contain the slug as a substring
+      const partialSlugMatches = data.games.filter(game =>
+        game.id.includes(slug) ||
+        game.title.toLowerCase().includes(slug.replace(/-/g, ' '))
+      );
+      console.log(`Found ${partialSlugMatches.length} games with partial slug matches`);
+      if (partialSlugMatches.length > 0) {
+        console.log(`Sample partial matches:`, partialSlugMatches.slice(0, 3).map(g => ({
+          id: g.id,
+          title: g.title,
+          categoryId: g.categoryId,
+          console: g.console
+        })));
       }
     } else {
       console.log(`Found game: ${foundGame.title}`);
