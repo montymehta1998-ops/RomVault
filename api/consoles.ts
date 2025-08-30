@@ -9,6 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json(consoles);
   } catch (error) {
     console.error('Failed to fetch consoles:', error);
-    res.status(500).json({ error: 'Failed to fetch consoles', message: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: 'Failed to fetch consoles', message: errorMessage });
   }
 }

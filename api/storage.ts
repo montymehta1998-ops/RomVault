@@ -66,6 +66,9 @@ export class MemStorage implements IStorage {
   private dataDir: string;
 
   constructor() {
+    // Initialize dataDir with fallback value
+    this.dataDir = path.resolve(process.cwd(), "data");
+
     // In Vercel, the data directory might be in a different location
     // Try multiple possible locations
     const possiblePaths = [
@@ -92,16 +95,13 @@ export class MemStorage implements IStorage {
           }
         }
       } catch (error) {
-        console.log(`Failed to access ${dataPath}:`, error.message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.log(`Failed to access ${dataPath}:`, errorMessage);
         // Continue to next path
       }
     }
 
-    if (!this.dataDir) {
-      // Fallback to default
-      this.dataDir = path.resolve(process.cwd(), "data");
-      console.log(`Using fallback data directory: ${this.dataDir}`);
-    }
+    console.log(`Using data directory: ${this.dataDir}`);
   }
 
   private async loadData(): Promise<RomData> {

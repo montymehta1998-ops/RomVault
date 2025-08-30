@@ -9,6 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json(data);
   } catch (error) {
     console.error('Failed to fetch ROM data:', error);
-    res.status(500).json({ error: 'Failed to fetch ROM data', message: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: 'Failed to fetch ROM data', message: errorMessage });
   }
 }

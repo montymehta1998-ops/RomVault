@@ -30,6 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json(game);
   } catch (error) {
     console.error('Failed to fetch ROM:', error);
-    res.status(500).json({ error: 'Failed to fetch ROM', message: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: 'Failed to fetch ROM', message: errorMessage });
   }
 }
