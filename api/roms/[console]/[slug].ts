@@ -14,11 +14,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Slug parameter is required' });
     }
     
+    // Log the parameters for debugging
+    console.log(`Searching for game with console: ${consoleParam}, slug: ${slug}`);
+    
     // For now, just pass the console parameter as is
     const game = await storage.getGameBySlug(consoleParam, slug);
     
     if (!game) {
+      // Log more details for debugging
       console.log(`ROM with console ${consoleParam} and slug ${slug} not found`);
+      // Try to get some info about what's available
+      try {
+        const allData = await storage.getRomData();
+        const matchingConsoleGames = allData.games.filter(g =>
+          g.console.toLowerCase() === consoleParam.toLowerCase()
+        );
+        console.log(`Found ${matchingConsoleGames.length} games for console ${consoleParam}`);
+        if (matchingConsoleGames.length > 0) {
+          console.log(`Sample games for ${consoleParam}:`, matchingConsoleGames.slice(0, 3).map(g => ({
+            id: g.id,
+            title: g.title,
+            categoryId: g.categoryId
+          })));
+        }
+      } catch (infoError) {
+        console.error('Failed to get additional info for debugging:', infoError);
+      }
       return res.status(404).json({ error: 'ROM not found' });
     }
     

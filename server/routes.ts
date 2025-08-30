@@ -126,13 +126,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/roms/:console/:slug", async (req, res) => {
     try {
       const { console: consoleParam, slug } = req.params;
+      console.log(`Server route: Searching for game with console: ${consoleParam}, slug: ${slug}`);
       // For now, just pass the slug to getGameBySlug
       const game = await storage.getGameBySlug(consoleParam, slug);
       if (!game) {
+        console.log(`Server route: Game not found for console: ${consoleParam}, slug: ${slug}`);
         return res.status(404).json({ error: "ROM not found" });
       }
+      console.log(`Server route: Found game: ${game.title}`);
       res.json(game);
     } catch (error) {
+      console.error("Server route: Failed to fetch ROM:", error);
       res.status(500).json({ error: "Failed to fetch ROM" });
     }
   });

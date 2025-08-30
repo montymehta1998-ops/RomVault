@@ -81,7 +81,9 @@ export class MemStorage implements IStorage {
       path.resolve(__dirname, "..", "data"),
       "/var/task/data", // Vercel's deployment directory
       path.resolve(process.cwd(), "..", "data"), // One level up
-      path.resolve(process.cwd(), "..", "..", "data") // Two levels up
+      path.resolve(process.cwd(), "..", "..", "data"), // Two levels up
+      path.resolve(__dirname, "..", "..", "data"), // Two levels up from __dirname
+      path.resolve(__dirname, "..", "..", "..", "data") // Three levels up from __dirname
     ];
 
     console.log(`Current working directory: ${process.cwd()}`);
@@ -93,21 +95,26 @@ export class MemStorage implements IStorage {
         const stat = fsSync.statSync(dataPath);
         if (stat.isDirectory()) {
           const files = fsSync.readdirSync(dataPath);
-          if (files.length > 0) {
-            this.dataDir = dataPath;
-            console.log(`Found data directory at: ${dataPath} with ${files.length} files`);
-            break;
-          }
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.log(`Failed to access ${dataPath}:`, errorMessage);
-        // Continue to next path
-      }
-    }
+          console.log(`Found data directory at: ${dataPath} with ${files.length} files`);
+          // Check if this directory contains JSON files
+         const jsonFiles = files.filter(file => file.endsWith('_roms.json'));
+         if (jsonFiles.length > 0) {
+           this.dataDir = dataPath;
+           console.log(`Using data directory with ROM files: ${dataPath} with ${jsonFiles.length} JSON files`);
+           break;
+         } else {
+           console.log(`Data directory ${dataPath} has no JSON files`);
+         }
+       }
+     } catch (error) {
+       const errorMessage = error instanceof Error ? error.message : String(error);
+       console.log(`Failed to access ${dataPath}:`, errorMessage);
+       // Continue to next path
+     }
+   }
 
-    console.log(`Using data directory: ${this.dataDir}`);
-  }
+   console.log(`Final data directory: ${this.dataDir}`);
+ }
 
   private async loadData(): Promise<RomData> {
     if (!this.romData) {
@@ -122,6 +129,13 @@ export class MemStorage implements IStorage {
           }
         } catch (error) {
           console.error(`Data directory does not exist or is not accessible: ${this.dataDir}`, error);
+          // List all files in current directory to help debug
+          try {
+            const currentDirFiles = await fs.readdir(process.cwd());
+            console.log(`Files in current directory (${process.cwd()}):`, currentDirFiles);
+          } catch (listError) {
+            console.error(`Failed to list files in current directory:`, listError);
+          }
           throw new Error(`Data directory not found: ${this.dataDir}`);
         }
 
@@ -661,8 +675,29 @@ export class MemStorage implements IStorage {
     // Create URL-friendly console ID with descriptive names and -roms suffix
     const consoleId = consoleIdMapping[console] || `${console.replace(/_/g, '-')}-roms`;
     
+    console.log(`Searching for game with slug: ${slug} and consoleId: ${consoleId}`);
+    
     // Find the game by ID (slug) and console category ID
-    return data.games.find(game => game.id === slug && game.categoryId === consoleId);
+    const foundGame = data.games.find(game => game.id === slug && game.categoryId === consoleId);
+    
+    if (!foundGame) {
+      // Let's do some additional debugging
+      console.log(`No exact match found. Looking for games with slug: ${slug}`);
+      const slugMatches = data.games.filter(game => game.id === slug);
+      console.log(`Found ${slugMatches.length} games with matching slug`);
+      if (slugMatches.length > 0) {
+        console.log(`Sample slug matches:`, slugMatches.slice(0, 3).map(g => ({
+          id: g.id,
+          title: g.title,
+          categoryId: g.categoryId,
+          console: g.console
+        })));
+      }
+    } else {
+      console.log(`Found game: ${foundGame.title}`);
+    }
+    
+    return foundGame;
   }
 
   async getConsoles(): Promise<string[]> {
