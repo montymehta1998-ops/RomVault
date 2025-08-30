@@ -1,7 +1,4 @@
 {
   "version": 2,
-  "outputDirectory": "dist/public",
-  "include": [
-    "data/**"
-  ]
+  "outputDirectory": "dist/public"
 }
