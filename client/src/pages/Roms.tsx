@@ -10,8 +10,9 @@ import type { GameData } from "@shared/schema";
 
 export default function Roms() {
   const [location] = useLocation();
+  const [, setLocation] = useLocation();
   const [match, params] = useRoute("/roms/:console?");
-  const [searchMatch] = useRoute("/search");
+  const [searchMatch, searchParams] = useRoute("/search");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"downloads" | "rating" | "year" | "title">("downloads");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,16 +21,16 @@ export default function Roms() {
   const limit = 20;
 
   // Handle search from URL parameters
-  useEffect(() => {
-    if (searchMatch) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const searchQuery = urlParams.get('q') || '';
-      setSearch(searchQuery);
-      setCurrentPage(1); // Reset page when search changes
-    } else {
-      setSearch(''); // Clear search when not on search page
-    }
-  }, [searchMatch, location]); // Add location as dependency to react to URL changes
+    useEffect(() => {
+      if (searchMatch) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || '';
+        setSearch(searchQuery);
+        setCurrentPage(1); // Reset page when search changes
+      } else {
+        setSearch(''); // Clear search when not on search page
+      }
+    }, [searchMatch, location, searchParams]); // Add location and searchParams as dependencies to react to URL changes
 
   // Reset state when navigating to different console or clearing filters
   useEffect(() => {
@@ -399,13 +400,14 @@ export default function Roms() {
       </div>
 
       {/* Filters (Search removed from console pages) */}
-      <div className={`grid grid-cols-1 gap-4 mb-8 ${!searchMatch && !selectedConsole ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
-        {!searchMatch && !selectedConsole && (
-          <SearchBar 
-            placeholder="Search ROMs..."
-            className="w-full"
-          />
-        )}
+            <div className={`grid grid-cols-1 gap-4 mb-8 ${!searchMatch && !selectedConsole ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
+              {(!selectedConsole) && (
+                <SearchBar
+                  placeholder="Search ROMs..."
+                  className="w-full"
+                  value={search}
+                />
+              )}
         
         <Select value={selectedConsole || "all-consoles"} onValueChange={(value) => setSelectedConsole(value === "all-consoles" ? "" : value)}>
           <SelectTrigger data-testid="select-console-filter">

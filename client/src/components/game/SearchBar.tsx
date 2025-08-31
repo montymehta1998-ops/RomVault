@@ -41,20 +41,18 @@ export function SearchBar({
   }, [query, debouncedSearch, onSearch]);
 
   const handleInputChange = (inputValue: string) => {
-    setQuery(inputValue);
-    // The debounced search will handle calling onSearch
-  };
+      setQuery(inputValue);
+      // The debounced search will handle calling onSearch
+    };
 
   const handleSearch = () => {
-    if (query.trim()) {
-      if (onSearch) {
-        onSearch(query.trim());
-      } else {
-        // Global search - navigate to search results
-        setLocation(`/search?q=${encodeURIComponent(query.trim())}`);
-      }
-    }
-  };
+        if (query.trim()) {
+          // Navigate to search results page
+          setLocation(`/search?q=${encodeURIComponent(query.trim())}`);
+          // Force a page refresh to ensure data is updated
+          window.location.reload();
+        }
+      };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
