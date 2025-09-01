@@ -50,9 +50,9 @@ Similarly, if you deploy to a different domain or subdirectory, the redirects wi
 
 The redirect functionality has been integrated into the main Express server to avoid creating additional serverless functions. This helps keep the total number of serverless functions under the Hobby plan limit (12 functions).
 
-For Vercel deployment, we've added specific rewrite rules in vercel.json to handle redirects before the SPA routing takes over. Additionally, we've created a dedicated API endpoint at `api/redirect.ts` that handles redirect requests in the Vercel serverless environment.
+For Vercel deployment, we've created individual API endpoints for each redirect in the `api/redirects/` directory. This approach avoids infinite redirect loops that could occur with rewrite rules and ensures each redirect is handled efficiently.
 
-The redirect configuration is now included directly in the `api/redirect.ts` file to avoid import issues in the Vercel environment. The handler also properly handles both full URLs and path-only requests to ensure compatibility with different environments.
+Each redirect endpoint properly handles both full URLs and path-only requests to ensure compatibility with different environments.
 
 ## Example
 
