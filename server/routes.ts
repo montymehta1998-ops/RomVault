@@ -1,8 +1,12 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { redirectMiddleware } from "../api/redirects";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Handle redirects
+  app.use(redirectMiddleware);
+  
   // Get all ROM data
   app.get("/api/rom-data", async (req, res) => {
     try {
