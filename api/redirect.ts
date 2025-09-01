@@ -1,9 +1,14 @@
-import redirects from './redirects-config';
-
 // Vercel serverless function handler
 export default async function handler(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
+  
+  // Redirects configuration
+  const redirects: { [oldPath: string]: string } = {
+    "/roms/gba-roms": "/roms/gameboy-advance-roms",
+    "/roms/3ds-roms": "/roms/nintendo-3ds-roms",
+    "/roms/gamecube-roms": "/roms/nintendo-gamecube-roms"
+  };
   
   // Check if the pathname matches any redirect
   for (const [oldPath, newPath] of Object.entries(redirects)) {

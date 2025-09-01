@@ -52,6 +52,8 @@ The redirect functionality has been integrated into the main Express server to a
 
 For Vercel deployment, we've added specific rewrite rules in vercel.json to handle redirects before the SPA routing takes over. Additionally, we've created a dedicated API endpoint at `api/redirect.ts` that handles redirect requests in the Vercel serverless environment.
 
+The redirect configuration is now included directly in the `api/redirect.ts` file to avoid import issues in the Vercel environment.
+
 ## Example
 
 The system comes with pre-configured examples:
