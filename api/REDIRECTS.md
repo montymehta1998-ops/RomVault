@@ -5,8 +5,10 @@ This document explains how to use the redirect system in the RomVault project.
 ## How it works
 
 The redirect system consists of two main files:
-1. `redirects-config.ts` - Contains the mapping of old URLs to new URLs
-2. `redirects.ts` - The handler that processes redirect requests
+1. `redirects-config.ts` - Contains the mapping of old URLs to new URLs (located in both api/ and server/ directories)
+2. `server/redirects.ts` - The handler that processes redirect requests
+
+The configuration file exists in both locations to maintain compatibility with existing code while avoiding Vercel serverless function limits.
 
 ## Adding new redirects
 
@@ -43,6 +45,10 @@ For example, if your site is hosted at `https://www.emulator-games.net/`, the re
 - Will redirect to: `https://www.emulator-games.net/roms/gameboy-advance-roms/`
 
 Similarly, if you deploy to a different domain or subdirectory, the redirects will still work correctly.
+
+## Vercel Deployment
+
+The redirect functionality has been integrated into the main Express server to avoid creating additional serverless functions. This helps keep the total number of serverless functions under the Hobby plan limit (12 functions).
 
 ## Example
 
