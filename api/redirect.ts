@@ -1,7 +1,16 @@
 // Vercel serverless function handler
 export default async function handler(request: Request) {
-  const url = new URL(request.url);
-  const pathname = url.pathname;
+  // For Vercel, request.url might be just a path, not a full URL
+  let pathname: string;
+  
+  try {
+    // Try to parse as a full URL first
+    const url = new URL(request.url);
+    pathname = url.pathname;
+  } catch (error) {
+    // If that fails, assume it's just a path
+    pathname = request.url;
+  }
   
   // Redirects configuration
   const redirects: { [oldPath: string]: string } = {
