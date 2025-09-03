@@ -44,11 +44,11 @@ export async function setupVite(app: Express, server: Server) {
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     
-    // Skip HTML articles and ROM pages - let them be handled by static middleware or redirects
-    if (url.startsWith('/articles/') && url.endsWith('.html')) {
+    // Skip articles and ROM pages - let them be handled by custom static middleware
+    if (url.startsWith('/articles/')) {
       return next();
     }
-    if (url.startsWith('/roms/') && url.endsWith('.html')) {
+    if (url.startsWith('/roms/') && !url.startsWith('/roms/api') && !url.startsWith('/roms/gba-roms') && !url.startsWith('/roms/3ds-roms') && !url.startsWith('/roms/gamecube-roms') && !url.startsWith('/roms/playstation-3-roms')) {
       return next();
     }
 

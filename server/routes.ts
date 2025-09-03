@@ -4,25 +4,34 @@ import { storage } from "./storage";
 import { redirectMiddleware } from "./redirects";
 import express from "express";
 import path from "path";
+import fs from "fs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Handle redirects
   app.use(redirectMiddleware);
 
-  // Serve static HTML files from articles and roms directories
-  app.use('/articles', express.static(path.join(process.cwd(), 'articles'), {
-    extensions: ['html'],
-    setHeaders: (res) => {
+  // Serve static HTML files from articles and roms directories with clean URLs
+  app.use('/articles', (req, res, next) => {
+    const filePath = path.join(process.cwd(), 'articles', req.path + '.html');
+    
+    if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
+      res.sendFile(filePath);
+    } else {
+      next();
     }
-  }));
+  });
   
-  app.use('/roms', express.static(path.join(process.cwd(), 'roms'), {
-    extensions: ['html'],
-    setHeaders: (res) => {
+  app.use('/roms', (req, res, next) => {
+    const filePath = path.join(process.cwd(), 'roms', req.path + '.html');
+    
+    if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
+      res.sendFile(filePath);
+    } else {
+      next();
     }
-  }));
+  });
   
   // Get all ROM data
   app.get("/api/rom-data", async (req, res) => {
