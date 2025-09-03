@@ -2,10 +2,27 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { redirectMiddleware } from "./redirects";
+import express from "express";
+import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Handle redirects
   app.use(redirectMiddleware);
+
+  // Serve static HTML files from articles and roms directories
+  app.use('/articles', express.static(path.join(process.cwd(), 'articles'), {
+    extensions: ['html'],
+    setHeaders: (res) => {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }));
+  
+  app.use('/roms', express.static(path.join(process.cwd(), 'roms'), {
+    extensions: ['html'],
+    setHeaders: (res) => {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }));
   
   // Get all ROM data
   app.get("/api/rom-data", async (req, res) => {
