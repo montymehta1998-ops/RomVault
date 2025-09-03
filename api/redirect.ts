@@ -1,4 +1,4 @@
-import redirects from './redirects-config';
+import redirects from './redirects-config.js';
 
 // Vercel serverless function handler
 export default async function handler(request: Request) {
