@@ -37,6 +37,16 @@ export interface CategoryData {
   downloadCount: number;
 }
 
+export interface ArticleData {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  date: string;
+  author: string;
+}
+
 export interface RomData {
   categories: CategoryData[];
   games: GameData[];
@@ -64,6 +74,8 @@ export interface IStorage {
   getGameBySlug(console: string, slug: string): Promise<GameData | undefined>;
   getPopularGames(limit?: number): Promise<GameData[]>;
   getConsoles(): Promise<string[]>;
+  getArticles(): Promise<ArticleData[]>;
+  getArticleBySlug(slug: string): Promise<ArticleData | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -752,6 +764,27 @@ export class MemStorage implements IStorage {
       .replace(/\.[^/.]+$/, "") // Remove file extension
       .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with hyphens
       .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  }
+
+  async getArticles(): Promise<ArticleData[]> {
+    try {
+      const articlesPath = path.join(this.dataDir, '..', 'data', 'articles.json');
+      const articlesData = await fs.readFile(articlesPath, 'utf-8');
+      return JSON.parse(articlesData) as ArticleData[];
+    } catch (error) {
+      console.error('Failed to load articles:', error);
+      return [];
+    }
+  }
+
+  async getArticleBySlug(slug: string): Promise<ArticleData | undefined> {
+    try {
+      const articles = await this.getArticles();
+      return articles.find(article => article.slug === slug);
+    } catch (error) {
+      console.error('Failed to find article by slug:', error);
+      return undefined;
+    }
   }
 }
 
