@@ -43,6 +43,14 @@ export async function setupVite(app: Express, server: Server) {
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    
+    // Skip HTML articles and ROM pages - let them be handled by static middleware or redirects
+    if (url.startsWith('/articles/') && url.endsWith('.html')) {
+      return next();
+    }
+    if (url.startsWith('/roms/') && url.endsWith('.html')) {
+      return next();
+    }
 
     try {
       const clientTemplate = path.resolve(
