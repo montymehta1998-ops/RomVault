@@ -3,53 +3,14 @@ import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Search } from "lucide-react";
 
-interface ArticleData {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  date: string;
-  author: string;
-}
 
 export default function NotFound() {
   const [location, setLocation] = useLocation();
-  const [article, setArticle] = useState<ArticleData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkForArticle = async () => {
-      // Extract slug from URL path
-      const pathParts = location.split('/').filter(Boolean);
-      
-      // Check if this might be an article URL
-      if (pathParts.length > 0) {
-        const slug = pathParts[pathParts.length - 1];
-        
-        try {
-          const response = await fetch(`/api/articles/${slug}`);
-          if (response.ok) {
-            const data = await response.json();
-            setArticle(data);
-          }
-        } catch (error) {
-          console.error("Error checking for article:", error);
-        }
-      }
-      
-      setLoading(false);
-    };
-
-    checkForArticle();
-  }, [location]);
-
-  // If we found an article, redirect to the article page
-  useEffect(() => {
-    if (article) {
-      setLocation(`/articles/${article.slug}`);
-    }
-  }, [article, setLocation]);
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return (
