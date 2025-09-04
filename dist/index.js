@@ -469,8 +469,55 @@ var MemStorage = class {
 };
 var storage = new MemStorage();
 
+// server/redirects-config.ts
+var redirects = {
+  // Example redirect:
+  // Old: https://www.emulator-games.net/roms/gba-roms/
+  // New: https://www.emulator-games.net/roms/gameboy-advance-roms
+  "/roms/gba-roms": "/roms/gameboy-advance-roms",
+  "/roms/3ds-roms": "/roms/nintendo-3ds-roms",
+  "/roms/gamecube-roms": "/roms/nintendo-gamecube-roms",
+  "/roms/playstation-3-roms/god-of-war-iii": "/roms/playstation-3-roms/god-of-war-iii-usa"
+  // Remove redirects - we'll handle clean URLs directly
+};
+var redirects_config_default = redirects;
+
+// server/redirects.ts
+function redirectMiddleware(req, res, next) {
+  const pathname = req.path;
+  for (const [oldPath, newPath] of Object.entries(redirects_config_default)) {
+    if (pathname === oldPath || pathname.startsWith(oldPath + "/")) {
+      const remainingPath = pathname.substring(oldPath.length);
+      const newLocation = newPath + remainingPath;
+      return res.redirect(301, newLocation);
+    }
+  }
+  next();
+}
+
 // server/routes.ts
+import path2 from "path";
+import fs2 from "fs";
 async function registerRoutes(app2) {
+  app2.use(redirectMiddleware);
+  app2.get("/articles/*.html", (req, res, next) => {
+    const filePath = path2.join(process.cwd(), "articles", path2.basename(req.path));
+    if (fs2.existsSync(filePath)) {
+      res.setHeader("Cache-Control", "no-cache");
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("Article not found");
+    }
+  });
+  app2.get("/roms/*.html", (req, res, next) => {
+    const filePath = path2.join(process.cwd(), "roms", path2.basename(req.path));
+    if (fs2.existsSync(filePath)) {
+      res.setHeader("Cache-Control", "no-cache");
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("ROM article not found");
+    }
+  });
   app2.get("/api/rom-data", async (req, res) => {
     try {
       const data = await storage.getRomData();
@@ -592,14 +639,14 @@ async function registerRoutes(app2) {
 
 // server/vite.ts
 import express from "express";
-import fs2 from "fs";
-import path3 from "path";
+import fs3 from "fs";
+import path4 from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path2 from "path";
+import path3 from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 var vite_config_default = defineConfig({
   plugins: [
@@ -613,14 +660,14 @@ var vite_config_default = defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path2.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path2.resolve(import.meta.dirname, "shared"),
-      "@assets": path2.resolve(import.meta.dirname, "attached_assets")
+      "@": path3.resolve(import.meta.dirname, "client", "src"),
+      "@shared": path3.resolve(import.meta.dirname, "shared"),
+      "@assets": path3.resolve(import.meta.dirname, "attached_assets")
     }
   },
-  root: path2.resolve(import.meta.dirname, "client"),
+  root: path3.resolve(import.meta.dirname, "client"),
   build: {
-    outDir: path2.resolve(import.meta.dirname, "dist/public"),
+    outDir: path3.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true
   },
   server: {
@@ -665,14 +712,17 @@ async function setupVite(app2, server) {
   app2.use(vite.middlewares);
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    if (url.startsWith("/api/") || url.includes(".")) {
+      return next();
+    }
     try {
-      const clientTemplate = path3.resolve(
+      const clientTemplate = path4.resolve(
         import.meta.dirname,
         "..",
         "client",
         "index.html"
       );
-      let template = await fs2.promises.readFile(clientTemplate, "utf-8");
+      let template = await fs3.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
@@ -686,15 +736,15 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path3.resolve(import.meta.dirname, "public");
-  if (!fs2.existsSync(distPath)) {
+  const distPath = path4.resolve(import.meta.dirname, "public");
+  if (!fs3.existsSync(distPath)) {
     throw new Error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
   }
   app2.use(express.static(distPath));
   app2.use("*", (_req, res) => {
-    res.sendFile(path3.resolve(distPath, "index.html"));
+    res.sendFile(path4.resolve(distPath, "index.html"));
   });
 }
 
@@ -704,7 +754,7 @@ app.use(express2.json());
 app.use(express2.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   const start = Date.now();
-  const path4 = req.path;
+  const path5 = req.path;
   let capturedJsonResponse = void 0;
   const originalResJson = res.json;
   res.json = function(bodyJson, ...args) {
@@ -713,8 +763,8 @@ app.use((req, res, next) => {
   };
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path4.startsWith("/api")) {
-      let logLine = `${req.method} ${path4} ${res.statusCode} in ${duration}ms`;
+    if (path5.startsWith("/api")) {
+      let logLine = `${req.method} ${path5} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
