@@ -1,0 +1,935 @@
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroROMs Archive - Classic Gaming Collection</title>
+    <meta name="description" content="Discover and download classic video game ROMs from multiple platforms and consoles">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "sans-serif"],
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(222 84% 5%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222 84% 5%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222 84% 5%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(262 83% 58%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(217 33% 17%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217 33% 17%);
+            --muted-foreground: hsl(215 20% 65%);
+            --accent: hsl(217 33% 17%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 62% 30%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217 33% 17%);
+            --input: hsl(217 33% 17%);
+            --ring: hsl(262 83% 58%);
+            --radius: 0.75rem;
+        }
+
+        .light {
+            --background: hsl(0 0% 100%);
+            --foreground: hsl(222 84% 5%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222 84% 5%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222 84% 5%);
+            --primary: hsl(262 83% 58%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222 47% 11%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215 16% 47%);
+            --accent: hsl(210 40% 96%);
+            --accent-foreground: hsl(222 47% 11%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214 32% 91%);
+            --input: hsl(214 32% 91%);
+            --ring: hsl(262 83% 58%);
+        }
+
+        body {
+            font-family: Inter, system-ui, sans-serif;
+        }
+
+        .game-card {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .star-rating {
+            color: #fbbf24;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, 
+                hsl(var(--muted)) 25%, 
+                hsl(var(--accent)) 50%, 
+                hsl(var(--muted)) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <!-- @COMPONENT: Header -->
+    <header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="container mx-auto flex h-16 items-center justify-between px-4">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gamepad text-primary-foreground text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold">RetroROMs</span>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6 text-sm">
+                    <a href="#" class="text-foreground hover:text-primary transition-colors">Home</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">Categories</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">Popular</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">New Releases</a>
+                </nav>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input 
+                        type="search" 
+                        placeholder="Search games..." 
+                        class="w-64 px-4 py-2 pl-10 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                        data-implementation="Should implement real-time search with debouncing"
+                    />
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                </div>
+                <button 
+                    id="theme-toggle"
+                    class="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors"
+                    data-implementation="Toggle between light and dark themes"
+                >
+                    <i class="fas fa-moon text-secondary-foreground"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- @COMPONENT: HomePage -->
+        <div id="home-page" class="space-y-12">
+            <!-- Hero Section -->
+            <section class="hero-gradient rounded-2xl p-12 text-center text-white">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">Classic Gaming Archive</h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+                    Discover thousands of classic video games from your favorite retro consoles. 
+                    Relive the golden age of gaming with our comprehensive ROM collection.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="px-8 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-white/90 transition-colors">
+                        Browse Categories
+                    </button>
+                    <button class="px-8 py-3 border border-white/30 text-white font-semibold rounded-lg hover:bg-white/10 transition-colors">
+                        Popular Games
+                    </button>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-card border border-border rounded-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-primary mb-2" data-bind="stats.totalGames">15,247</div>
+                    <div class="text-muted-foreground">Total Games</div>
+                </div>
+                <div class="bg-card border border-border rounded-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-primary mb-2" data-bind="stats.totalCategories">28</div>
+                    <div class="text-muted-foreground">Platforms</div>
+                </div>
+                <div class="bg-card border border-border rounded-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-primary mb-2" data-bind="stats.totalDownloads">2.3M</div>
+                    <div class="text-muted-foreground">Downloads</div>
+                </div>
+                <div class="bg-card border border-border rounded-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-primary mb-2" data-bind="stats.activeUsers">89K</div>
+                    <div class="text-muted-foreground">Active Users</div>
+                </div>
+            </section>
+
+            <!-- Categories Grid -->
+            <section>
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-3xl font-bold">Browse by Platform</h2>
+                    <a href="#" class="text-primary hover:underline">View All →</a>
+                </div>
+                
+                <!-- @MAP: categories.map(category => ( -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" data-implementation="Load categories from games.json">
+                    <!-- Nintendo Entertainment System Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="nes">
+                        <!-- Retro NES console with classic controller setup -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Nintendo Entertainment System console" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Nintendo Entertainment System</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">Classic 8-bit gaming at its finest</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">847 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Super Nintendo Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="snes">
+                        <!-- Super Nintendo console with colorful button controller -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Super Nintendo console with controller" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Super Nintendo</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">16-bit era masterpieces</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">1,205 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Game Boy Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="gameboy">
+                        <!-- Original Game Boy handheld console with Tetris screen -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Game Boy handheld console" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Game Boy</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">Portable gaming revolution</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">623 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Sega Genesis Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="genesis">
+                        <!-- Sega Genesis console with 6-button controller -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Sega Genesis console setup" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Sega Genesis</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">Blast processing power</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">734 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PlayStation Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="playstation">
+                        <!-- Original PlayStation console with DualShock controller -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Original PlayStation console" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">PlayStation</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">32-bit 3D gaming revolution</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">1,456 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Nintendo 64 Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="n64">
+                        <!-- Nintendo 64 console with distinctive three-pronged controller -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Nintendo 64 console and controller" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Nintendo 64</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">64-bit gaming innovation</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">387 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Arcade Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="arcade">
+                        <!-- Classic arcade cabinet with joystick and buttons -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Classic arcade machine cabinet" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Arcade</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">Original arcade experiences</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">892 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Game Boy Advance Category -->
+                    <a href="#" class="game-card group bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50" data-category="gba">
+                        <!-- Game Boy Advance handheld in purple color -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                            alt="Game Boy Advance handheld console" 
+                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="category.name">Game Boy Advance</h3>
+                            <p class="text-muted-foreground text-sm mb-3" data-bind="category.description">Advanced portable gaming</p>
+                            <div class="flex items-center justify-between text-sm text-muted-foreground">
+                                <span data-bind="category.gameCount">1,089 games</span>
+                                <span class="text-primary">Explore →</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <!-- @END_MAP )) -->
+            </section>
+
+            <!-- Popular Games Section -->
+            <section>
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-3xl font-bold">Popular This Week</h2>
+                    <a href="#" class="text-primary hover:underline">View All →</a>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- @MAP: popularGames.map(game => ( -->
+                    <div class="game-card group bg-card border border-border rounded-lg overflow-hidden" data-game-id="mario-bros-3">
+                        <!-- Super Mario Bros 3 game cover art with Mario in raccoon suit -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Super Mario Bros 3 game cover" 
+                            class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="game.title">Super Mario Bros. 3</h3>
+                            <p class="text-muted-foreground text-sm mb-2" data-bind="game.platform">Nintendo Entertainment System</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <span class="star-rating">★★★★★</span>
+                                    <span class="text-sm text-muted-foreground" data-bind="game.rating">4.9</span>
+                                </div>
+                                <span class="text-sm text-muted-foreground" data-bind="game.downloads">45.2K downloads</span>
+                            </div>
+                            <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+
+                    <div class="game-card group bg-card border border-border rounded-lg overflow-hidden" data-game-id="zelda-link">
+                        <!-- The Legend of Zelda Link's Awakening game cover with Link and sword -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="The Legend of Zelda Link's Awakening cover" 
+                            class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="game.title">The Legend of Zelda: Link's Awakening</h3>
+                            <p class="text-muted-foreground text-sm mb-2" data-bind="game.platform">Game Boy</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <span class="star-rating">★★★★★</span>
+                                    <span class="text-sm text-muted-foreground" data-bind="game.rating">4.8</span>
+                                </div>
+                                <span class="text-sm text-muted-foreground" data-bind="game.downloads">38.1K downloads</span>
+                            </div>
+                            <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="game-card group bg-card border border-border rounded-lg overflow-hidden" data-game-id="sonic-hedgehog">
+                        <!-- Sonic the Hedgehog game cover with blue hedgehog character running -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Sonic the Hedgehog game cover" 
+                            class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="game.title">Sonic the Hedgehog</h3>
+                            <p class="text-muted-foreground text-sm mb-2" data-bind="game.platform">Sega Genesis</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <span class="star-rating">★★★★☆</span>
+                                    <span class="text-sm text-muted-foreground" data-bind="game.rating">4.7</span>
+                                </div>
+                                <span class="text-sm text-muted-foreground" data-bind="game.downloads">42.8K downloads</span>
+                            </div>
+                            <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="game-card group bg-card border border-border rounded-lg overflow-hidden" data-game-id="tetris">
+                        <!-- Classic Tetris game cover with falling blocks pattern -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Tetris game cover with falling blocks" 
+                            class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2" data-bind="game.title">Tetris</h3>
+                            <p class="text-muted-foreground text-sm mb-2" data-bind="game.platform">Game Boy</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-1">
+                                    <span class="star-rating">★★★★★</span>
+                                    <span class="text-sm text-muted-foreground" data-bind="game.rating">4.9</span>
+                                </div>
+                                <span class="text-sm text-muted-foreground" data-bind="game.downloads">67.3K downloads</span>
+                            </div>
+                            <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- @END_COMPONENT: HomePage -->
+
+        <!-- @COMPONENT: CategoryPage -->
+        <div id="category-page" class="space-y-8 hidden" data-category="nes">
+            <!-- Category Header -->
+            <div class="flex items-center space-x-4 mb-8">
+                <button id="back-button" class="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="text-4xl font-bold" data-bind="category.name">Nintendo Entertainment System</h1>
+                    <p class="text-muted-foreground mt-2" data-bind="category.description">Classic 8-bit gaming at its finest - 847 games available</p>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="flex-1">
+                    <input 
+                        type="search" 
+                        placeholder="Search games in this category..." 
+                        class="w-full px-4 py-2 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                        data-implementation="Filter games by title within category"
+                    />
+                </div>
+                <select class="px-4 py-2 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" data-implementation="Sort games by selected criteria">
+                    <option value="downloads">Sort by Downloads</option>
+                    <option value="rating">Sort by Rating</option>
+                    <option value="year">Sort by Year</option>
+                    <option value="title">Sort by Title</option>
+                </select>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- @MAP: games.map(game => ( -->
+                <div class="game-card group bg-card border border-border rounded-lg overflow-hidden" data-game-id="super-mario-bros">
+                    <!-- Super Mario Bros game cover with Mario jumping over obstacles -->
+                    <img 
+                        src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                        alt="Super Mario Bros game cover" 
+                        class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                    />
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2" data-bind="game.title">Super Mario Bros.</h3>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-1">
+                                <span class="star-rating">★★★★★</span>
+                                <span class="text-sm text-muted-foreground" data-bind="game.rating">4.8</span>
+                            </div>
+                            <span class="text-sm text-muted-foreground" data-bind="game.downloads">52.1K</span>
+                        </div>
+                        <div class="text-xs text-muted-foreground mb-3">
+                            <div>Released: <span data-bind="game.year">1985</span></div>
+                            <div>Size: <span data-bind="game.size">32KB</span></div>
+                        </div>
+                        <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+
+                <!-- Loading Skeletons for pagination -->
+                <div class="loading-skeleton rounded-lg h-80"></div>
+                <div class="loading-skeleton rounded-lg h-80"></div>
+                <div class="loading-skeleton rounded-lg h-80"></div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-12">
+                <div class="text-muted-foreground">
+                    Showing <span data-bind="pagination.start">1</span>-<span data-bind="pagination.end">20</span> of <span data-bind="pagination.total">847</span> games
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="px-3 py-2 border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50" disabled>
+                        Previous
+                    </button>
+                    <button class="px-3 py-2 bg-primary text-primary-foreground rounded-lg">1</button>
+                    <button class="px-3 py-2 border border-border rounded-lg hover:bg-accent transition-colors">2</button>
+                    <button class="px-3 py-2 border border-border rounded-lg hover:bg-accent transition-colors">3</button>
+                    <span class="px-3 py-2">...</span>
+                    <button class="px-3 py-2 border border-border rounded-lg hover:bg-accent transition-colors">43</button>
+                    <button class="px-3 py-2 border border-border rounded-lg hover:bg-accent transition-colors">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: CategoryPage -->
+
+        <!-- @COMPONENT: GameDetailPage -->
+        <div id="game-detail-page" class="space-y-8 hidden" data-game-id="super-mario-bros">
+            <!-- Game Header -->
+            <div class="flex items-center space-x-4 mb-8">
+                <button id="back-to-category" class="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="text-4xl font-bold" data-bind="game.title">Super Mario Bros.</h1>
+                    <p class="text-muted-foreground mt-2">
+                        <span data-bind="game.platform">Nintendo Entertainment System</span> • 
+                        <span data-bind="game.year">1985</span> • 
+                        <span data-bind="game.region">NTSC</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Game Image and Screenshots -->
+                <div class="lg:col-span-1">
+                    <!-- Super Mario Bros gameplay screenshot showing Mario in World 1-1 -->
+                    <img 
+                        src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800" 
+                        alt="Super Mario Bros gameplay screenshot" 
+                        class="w-full rounded-lg shadow-lg mb-4"
+                        data-bind="game.image"
+                    />
+                    
+                    <!-- Download Section -->
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">Download Information</h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">File Name:</span>
+                                <span data-bind="game.fileName">super-mario-bros.nes</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">File Size:</span>
+                                <span data-bind="game.size">32 KB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Downloads:</span>
+                                <span data-bind="game.downloads">52,124</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Console:</span>
+                                <span data-bind="game.console">NES</span>
+                            </div>
+                        </div>
+                        <button 
+                            class="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+                            data-implementation="Download ROM file from URL in games.json"
+                            data-bind="game.downloadUrl"
+                        >
+                            <i class="fas fa-download mr-2"></i>
+                            Download ROM
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Details -->
+                <div class="lg:col-span-2">
+                    <!-- Rating and Stats -->
+                    <div class="bg-card border border-border rounded-lg p-6 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-2">
+                                    <span class="star-rating text-2xl">★★★★★</span>
+                                    <span class="text-2xl font-bold" data-bind="game.rating">4.8</span>
+                                </div>
+                                <div class="text-muted-foreground">
+                                    Based on <span data-bind="game.reviewCount">2,847</span> reviews
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-primary" data-bind="game.downloads">52.1K</div>
+                                <div class="text-muted-foreground">Downloads</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rating Breakdown -->
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm w-8">5★</span>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 78%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground w-12">78%</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm w-8">4★</span>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground w-12">15%</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm w-8">3★</span>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 5%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground w-12">5%</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm w-8">2★</span>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 1%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground w-12">1%</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm w-8">1★</span>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 1%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground w-12">1%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game Description -->
+                    <div class="bg-card border border-border rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4">About This Game</h3>
+                        <p class="text-muted-foreground leading-relaxed mb-4" data-bind="game.description">
+                            Super Mario Bros. is a platform video game developed and published by Nintendo. 
+                            The successor to the 1983 arcade game Mario Bros. and the first in the Super Mario series, 
+                            it was originally released in 1985 for the Famicom in Japan. Following a limited US release 
+                            for the Nintendo Entertainment System, it was ported to international markets as a launch title 
+                            for the system in 1985 and 1987.
+                        </p>
+                        <p class="text-muted-foreground leading-relaxed" data-bind="game.longDescription">
+                            In Super Mario Bros., the player controls Mario as he travels through the Mushroom Kingdom 
+                            in order to rescue Princess Toadstool from the antagonist Bowser. The game is a side-scrolling 
+                            platformer; the player moves from the left side of the screen to the right side in order to 
+                            reach the flag pole at the end of each level.
+                        </p>
+                    </div>
+
+                    <!-- Technical Information -->
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">Technical Specifications</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-muted-foreground text-sm">Platform</div>
+                                <div class="font-semibold" data-bind="game.platform">Nintendo Entertainment System</div>
+                            </div>
+                            <div>
+                                <div class="text-muted-foreground text-sm">Console</div>
+                                <div class="font-semibold" data-bind="game.console">NES</div>
+                            </div>
+                            <div>
+                                <div class="text-muted-foreground text-sm">Category</div>
+                                <div class="font-semibold" data-bind="game.category">Platform</div>
+                            </div>
+                            <div>
+                                <div class="text-muted-foreground text-sm">Region</div>
+                                <div class="font-semibold" data-bind="game.region">NTSC (US)</div>
+                            </div>
+                            <div>
+                                <div class="text-muted-foreground text-sm">Release Year</div>
+                                <div class="font-semibold" data-bind="game.releaseYear">1985</div>
+                            </div>
+                            <div>
+                                <div class="text-muted-foreground text-sm">File Format</div>
+                                <div class="font-semibold">.NES</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: GameDetailPage -->
+    </main>
+
+    <!-- @COMPONENT: Footer -->
+    <footer class="border-t border-border bg-card mt-16">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-gamepad text-primary-foreground text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold">RetroROMs</span>
+                    </div>
+                    <p class="text-muted-foreground mb-4 max-w-md">
+                        Your ultimate destination for classic video game ROMs. Preserving gaming history 
+                        one ROM at a time, bringing retro gaming to modern devices.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-reddit text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">Popular Games</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">New Releases</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">All Categories</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Random Game</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
+                <p class="text-muted-foreground text-sm">
+                    © 2024 RetroROMs Archive. All rights reserved.
+                </p>
+                <p class="text-muted-foreground text-sm mt-2 md:mt-0">
+                    Built with Next.js & Tailwind CSS
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // TODO: Implement real functionality with Next.js
+        // This is just for demonstration purposes
+        
+        // Theme toggle functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            themeToggle.addEventListener('click', function() {
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    this.innerHTML = '<i class="fas fa-sun text-secondary-foreground"></i>';
+                } else {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    this.innerHTML = '<i class="fas fa-moon text-secondary-foreground"></i>';
+                }
+            });
+        })();
+
+        // Simple page navigation simulation
+        (function() {
+            const pages = {
+                home: document.getElementById('home-page'),
+                category: document.getElementById('category-page'),
+                gameDetail: document.getElementById('game-detail-page')
+            };
+
+            function showPage(pageName) {
+                Object.values(pages).forEach(page => page.classList.add('hidden'));
+                if (pages[pageName]) {
+                    pages[pageName].classList.remove('hidden');
+                }
+            }
+
+            // Category card clicks
+            document.querySelectorAll('[data-category]').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPage('category');
+                    window.scrollTo(0, 0);
+                });
+            });
+
+            // Game card clicks
+            document.querySelectorAll('[data-game-id]').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!e.target.closest('button')) {
+                        showPage('gameDetail');
+                        window.scrollTo(0, 0);
+                    }
+                });
+            });
+
+            // Back button functionality
+            document.getElementById('back-button')?.addEventListener('click', function() {
+                showPage('home');
+                window.scrollTo(0, 0);
+            });
+
+            document.getElementById('back-to-category')?.addEventListener('click', function() {
+                showPage('category');
+                window.scrollTo(0, 0);
+            });
+
+            // Game detail buttons
+            document.querySelectorAll('button:not(#theme-toggle):not(#back-button):not(#back-to-category)').forEach(button => {
+                if (button.textContent.includes('View Details')) {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        showPage('gameDetail');
+                        window.scrollTo(0, 0);
+                    });
+                }
+            });
+        })();
+
+        // Lazy loading simulation
+        (function() {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        // In real implementation, this would load the actual image
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => imageObserver.observe(img));
+        })();
+
+        // Search functionality placeholder
+        (function() {
+            const searchInputs = document.querySelectorAll('input[type="search"]');
+            
+            searchInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // TODO: Implement real search functionality
+                    console.log('Searching for:', this.value);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -2,8 +2,6 @@
 
 This is a RetroROMs application - a classic video game ROM archive platform that allows users to browse, search, and discover retro gaming content. The application serves as a comprehensive library for classic gaming ROMs across various vintage console platforms like NES, SNES, Game Boy, Sega Genesis, PlayStation, and Nintendo 64. Users can explore games by category, view detailed game information, and access download functionality for ROM files.
 
-The application also includes custom blog content with 7 articles in the `/articles/` category and 2 articles in the `/roms/` category, providing additional gaming-related content and entertainment information.
-
 # User Preferences
 
 Preferred communication style: Simple, everyday language.

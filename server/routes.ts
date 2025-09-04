@@ -1,38 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { redirectMiddleware } from "./redirects";
-import express from "express";
-import path from "path";
-import fs from "fs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Handle redirects
-  app.use(redirectMiddleware);
-
-  // Serve static HTML files only when explicitly requested with .html extension
-  app.get('/articles/*.html', (req, res, next) => {
-    const filePath = path.join(process.cwd(), 'articles', path.basename(req.path));
-    
-    if (fs.existsSync(filePath)) {
-      res.setHeader('Cache-Control', 'no-cache');
-      res.sendFile(filePath);
-    } else {
-      res.status(404).send('Article not found');
-    }
-  });
-  
-  app.get('/roms/*.html', (req, res, next) => {
-    const filePath = path.join(process.cwd(), 'roms', path.basename(req.path));
-    
-    if (fs.existsSync(filePath)) {
-      res.setHeader('Cache-Control', 'no-cache');
-      res.sendFile(filePath);
-    } else {
-      res.status(404).send('ROM article not found');
-    }
-  });
-  
   // Get all ROM data
   app.get("/api/rom-data", async (req, res) => {
     try {

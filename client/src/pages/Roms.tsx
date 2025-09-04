@@ -10,9 +10,8 @@ import type { GameData } from "@shared/schema";
 
 export default function Roms() {
   const [location] = useLocation();
-  const [, setLocation] = useLocation();
   const [match, params] = useRoute("/roms/:console?");
-  const [searchMatch, searchParams] = useRoute("/search");
+  const [searchMatch] = useRoute("/search");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"downloads" | "rating" | "year" | "title">("downloads");
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,16 +20,16 @@ export default function Roms() {
   const limit = 20;
 
   // Handle search from URL parameters
-    useEffect(() => {
-      if (searchMatch) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('q') || '';
-        setSearch(searchQuery);
-        setCurrentPage(1); // Reset page when search changes
-      } else {
-        setSearch(''); // Clear search when not on search page
-      }
-    }, [searchMatch, location, searchParams]); // Add location and searchParams as dependencies to react to URL changes
+  useEffect(() => {
+    if (searchMatch) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('q') || '';
+      setSearch(searchQuery);
+      setCurrentPage(1); // Reset page when search changes
+    } else {
+      setSearch(''); // Clear search when not on search page
+    }
+  }, [searchMatch, location]); // Add location as dependency to react to URL changes
 
   // Reset state when navigating to different console or clearing filters
   useEffect(() => {
@@ -44,15 +43,6 @@ export default function Roms() {
   // Update selectedConsole when URL changes and handle redirects
   useEffect(() => {
     if (params?.console) {
-      // Skip redirects for specific ROM articles
-      const romArticles = [
-        'level-up-your-fps-game-why-korean-gamers-trust-mart-hack-for-premium-gaming-support-services',
-        'unleashing-gaming-dominance-with-engineowning-the-go-to-platform-for-undetected-multiplayer-game-cheats'
-      ];
-      
-      if (romArticles.includes(params.console)) {
-        return; // Don't process these as console routes
-      }
       // Handle redirects: if URL doesn't end with -roms, redirect to -roms version
       if (!params.console.endsWith('-roms')) {
         const newUrl = `/roms/${params.console}-roms`;
@@ -409,14 +399,13 @@ export default function Roms() {
       </div>
 
       {/* Filters (Search removed from console pages) */}
-            <div className={`grid grid-cols-1 gap-4 mb-8 ${!searchMatch && !selectedConsole ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
-              {(!selectedConsole) && (
-                <SearchBar
-                  placeholder="Search ROMs..."
-                  className="w-full"
-                  value={search}
-                />
-              )}
+      <div className={`grid grid-cols-1 gap-4 mb-8 ${!searchMatch && !selectedConsole ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
+        {!searchMatch && !selectedConsole && (
+          <SearchBar 
+            placeholder="Search ROMs..."
+            className="w-full"
+          />
+        )}
         
         <Select value={selectedConsole || "all-consoles"} onValueChange={(value) => setSelectedConsole(value === "all-consoles" ? "" : value)}>
           <SelectTrigger data-testid="select-console-filter">
