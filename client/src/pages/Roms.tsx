@@ -44,6 +44,15 @@ export default function Roms() {
   // Update selectedConsole when URL changes and handle redirects
   useEffect(() => {
     if (params?.console) {
+      // Skip redirects for specific ROM articles
+      const romArticles = [
+        'level-up-your-fps-game-why-korean-gamers-trust-mart-hack-for-premium-gaming-support-services',
+        'unleashing-gaming-dominance-with-engineowning-the-go-to-platform-for-undetected-multiplayer-game-cheats'
+      ];
+      
+      if (romArticles.includes(params.console)) {
+        return; // Don't process these as console routes
+      }
       // Handle redirects: if URL doesn't end with -roms, redirect to -roms version
       if (!params.console.endsWith('-roms')) {
         const newUrl = `/roms/${params.console}-roms`;
