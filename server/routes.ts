@@ -12,7 +12,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve static HTML files from articles and roms directories with clean URLs
   app.use('/articles', (req, res, next) => {
-    const filePath = path.join(process.cwd(), 'articles', req.path + '.html');
+    // Remove trailing slash from the path
+    const cleanPath = req.path.replace(/\/$/, '') || '/index';
+    const filePath = path.join(process.cwd(), 'articles', cleanPath + '.html');
     
     if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
@@ -23,7 +25,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   app.use('/roms', (req, res, next) => {
-    const filePath = path.join(process.cwd(), 'roms', req.path + '.html');
+    // Remove trailing slash from the path
+    const cleanPath = req.path.replace(/\/$/, '') || '/index';
+    const filePath = path.join(process.cwd(), 'roms', cleanPath + '.html');
     
     if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
