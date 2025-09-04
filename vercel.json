@@ -8,15 +8,15 @@
   },
   "rewrites": [
     {
-      "source": "/roms/gba-roms(.*)",
+      "source": "/roms/gba-roms/(.*)",
       "destination": "/api/redirect"
     },
     {
-      "source": "/roms/3ds-roms(.*)",
+      "source": "/roms/3ds-roms/(.*)",
       "destination": "/api/redirect"
     },
     {
-      "source": "/roms/gamecube-roms(.*)",
+      "source": "/roms/gamecube-roms/(.*)",
       "destination": "/api/redirect"
     },
     {
