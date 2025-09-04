@@ -44,11 +44,8 @@ export async function setupVite(app: Express, server: Server) {
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     
-    // Skip articles and ROM pages - let them be handled by custom static middleware
-    if (url.startsWith('/articles/')) {
-      return next();
-    }
-    if (url.startsWith('/roms/') && !url.startsWith('/roms/api') && !url.startsWith('/roms/gba-roms') && !url.startsWith('/roms/3ds-roms') && !url.startsWith('/roms/gamecube-roms') && !url.startsWith('/roms/playstation-3-roms')) {
+    // Skip API routes and static file requests
+    if (url.startsWith('/api/') || url.includes('.')) {
       return next();
     }
 

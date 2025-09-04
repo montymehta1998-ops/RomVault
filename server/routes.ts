@@ -10,30 +10,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Handle redirects
   app.use(redirectMiddleware);
 
-  // Serve static HTML files from articles and roms directories with clean URLs
-  app.use('/articles', (req, res, next) => {
-    // Remove trailing slash from the path
-    const cleanPath = req.path.replace(/\/$/, '') || '/index';
-    const filePath = path.join(process.cwd(), 'articles', cleanPath + '.html');
+  // Serve static HTML files only when explicitly requested with .html extension
+  app.get('/articles/*.html', (req, res, next) => {
+    const filePath = path.join(process.cwd(), 'articles', path.basename(req.path));
     
     if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
       res.sendFile(filePath);
     } else {
-      next();
+      res.status(404).send('Article not found');
     }
   });
   
-  app.use('/roms', (req, res, next) => {
-    // Remove trailing slash from the path
-    const cleanPath = req.path.replace(/\/$/, '') || '/index';
-    const filePath = path.join(process.cwd(), 'roms', cleanPath + '.html');
+  app.get('/roms/*.html', (req, res, next) => {
+    const filePath = path.join(process.cwd(), 'roms', path.basename(req.path));
     
     if (fs.existsSync(filePath)) {
       res.setHeader('Cache-Control', 'no-cache');
       res.sendFile(filePath);
     } else {
-      next();
+      res.status(404).send('ROM article not found');
     }
   });
   
