@@ -56,7 +56,7 @@
       "destination": "/roms/unleashing-gaming-dominance-with-engineowning-the-go-to-platform-for-undetected-multiplayer-game-cheats.html"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
