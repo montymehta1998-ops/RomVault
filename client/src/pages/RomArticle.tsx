@@ -2,57 +2,57 @@ import { useRoute } from "wouter";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function Article() {
-  const [, params] = useRoute("/articles/:slug");
+export default function RomArticle() {
+  const [, params] = useRoute("/roms/:slug");
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
-  console.log("Article component rendered, params:", params);
+  console.log("RomArticle component rendered, params:", params);
 
   useEffect(() => {
     if (!params?.slug) {
-      console.log("No slug found in params");
-      setError("No article slug provided");
+      console.log("No slug found in ROM article params");
+      setError("No ROM article slug provided");
       setLoading(false);
       return;
     }
 
-    console.log(`Article component mounted with slug: ${params.slug}`);
+    console.log(`ROM article component mounted with slug: ${params.slug}`);
     
-    const fetchArticle = async () => {
+    const fetchRomArticle = async () => {
       try {
         setLoading(true);
         setError("");
         
-        const url = `/articles/${params.slug}.html`;
-        console.log(`Fetching article from: ${url}`);
+        const url = `/roms/${params.slug}.html`;
+        console.log(`Fetching ROM article from: ${url}`);
         
         const response = await fetch(url);
-        console.log(`Response received - Status: ${response.status}, OK: ${response.ok}`);
+        console.log(`ROM article response - Status: ${response.status}, OK: ${response.ok}`);
         
         if (!response.ok) {
-          throw new Error(`Article not found: ${response.status}`);
+          throw new Error(`ROM article not found: ${response.status}`);
         }
         
         const html = await response.text();
-        console.log(`Article content loaded, length: ${html.length} characters`);
+        console.log(`ROM article content loaded, length: ${html.length} characters`);
         
         if (html.length === 0) {
-          throw new Error("Article content is empty");
+          throw new Error("ROM article content is empty");
         }
         
         setContent(html);
       } catch (err) {
-        console.error("Error loading article:", err);
-        setError(err instanceof Error ? err.message : "Failed to load article");
+        console.error("Error loading ROM article:", err);
+        setError(err instanceof Error ? err.message : "Failed to load ROM article");
       } finally {
-        console.log("Setting loading to false");
+        console.log("Setting ROM article loading to false");
         setLoading(false);
       }
     };
 
-    fetchArticle();
+    fetchRomArticle();
   }, [params?.slug]);
 
   if (loading) {
@@ -62,7 +62,7 @@ export default function Article() {
           <Card>
             <CardContent className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p>Loading article...</p>
+              <p>Loading ROM article...</p>
             </CardContent>
           </Card>
         </div>
@@ -76,10 +76,10 @@ export default function Article() {
         <div className="max-w-4xl mx-auto">
           <Card>
             <CardContent className="p-8 text-center">
-              <h1 className="text-2xl font-bold text-red-600 mb-4">Article Not Found</h1>
+              <h1 className="text-2xl font-bold text-red-600 mb-4">ROM Article Not Found</h1>
               <p className="text-gray-600">{error}</p>
               <p className="text-sm text-gray-500 mt-2">
-                The article you're looking for might have been moved or deleted.
+                The ROM article you're looking for might have been moved or deleted.
               </p>
             </CardContent>
           </Card>

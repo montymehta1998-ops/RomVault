@@ -18,6 +18,7 @@ import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Article from "@/pages/Article";
+import RomArticle from "@/pages/RomArticle";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,6 +42,7 @@ function Router() {
           <Route path="/roms/:console" component={Roms} />
           <Route path="/roms/:console/:slug/download" component={RomDownload} />
           <Route path="/roms/:console/:slug" component={RomDetail} />
+          <Route path="/roms/:slug" component={RomArticle} />
           <Route path="/articles/:slug" component={Article} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
