@@ -1,6 +1,13 @@
-import redirects from './redirects-config';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+
+// Inline redirects configuration to avoid module resolution issues
+const redirects = {
+  "/roms/gba-roms": "/roms/gameboy-advance-roms",
+  "/roms/3ds-roms": "/roms/nintendo-3ds-roms",
+  "/roms/gamecube-roms": "/roms/nintendo-gamecube-roms",
+  "/roms/playstation-3-roms/god-of-war-iii" : "/roms/playstation-3-roms/god-of-war-iii-usa"
+};
 
 // Vercel serverless function handler
 export default async function handler(request: Request) {
