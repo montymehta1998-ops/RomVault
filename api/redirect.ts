@@ -26,19 +26,24 @@ export default async function handler(request: Request) {
   // Handle article URLs directly
   if (pathname.startsWith('/articles/')) {
     try {
-      const articlePath = pathname.replace('/articles/', '');
+      const articlePath = pathname.replace('/articles/', '').replace(/\/$/, ''); // Remove trailing slash
       const filePath = join(process.cwd(), 'articles', `${articlePath}.html`);
+      
+      console.log(`Attempting to read file: ${filePath}`);
       const content = await readFile(filePath, 'utf-8');
       
       return new Response(content, {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
     } catch (error) {
-      return new Response('Article not found', { status: 404 });
+      console.error(`Error reading article file: ${error}`);
+      return new Response(`Article not found: ${pathname}`, { status: 404 });
     }
   }
   
@@ -47,19 +52,24 @@ export default async function handler(request: Request) {
       (pathname.includes('level-up-your-fps-game') || 
        pathname.includes('unleashing-gaming-dominance'))) {
     try {
-      const romPath = pathname.replace('/roms/', '');
+      const romPath = pathname.replace('/roms/', '').replace(/\/$/, ''); // Remove trailing slash
       const filePath = join(process.cwd(), 'roms', `${romPath}.html`);
+      
+      console.log(`Attempting to read ROM file: ${filePath}`);
       const content = await readFile(filePath, 'utf-8');
       
       return new Response(content, {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
     } catch (error) {
-      return new Response('ROM article not found', { status: 404 });
+      console.error(`Error reading ROM file: ${error}`);
+      return new Response(`ROM article not found: ${pathname}`, { status: 404 });
     }
   }
   
