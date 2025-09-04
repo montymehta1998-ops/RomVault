@@ -1,4 +1,6 @@
 import redirects from './redirects-config';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 // Vercel serverless function handler
 export default async function handler(request: Request) {
@@ -12,6 +14,46 @@ export default async function handler(request: Request) {
   } catch (error) {
     // If that fails, assume it's just a path
     pathname = request.url;
+  }
+  
+  // Handle article URLs directly
+  if (pathname.startsWith('/articles/')) {
+    try {
+      const articlePath = pathname.replace('/articles/', '');
+      const filePath = join(process.cwd(), 'articles', `${articlePath}.html`);
+      const content = await readFile(filePath, 'utf-8');
+      
+      return new Response(content, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-cache'
+        }
+      });
+    } catch (error) {
+      return new Response('Article not found', { status: 404 });
+    }
+  }
+  
+  // Handle ROM article URLs directly
+  if (pathname.startsWith('/roms/') && 
+      (pathname.includes('level-up-your-fps-game') || 
+       pathname.includes('unleashing-gaming-dominance'))) {
+    try {
+      const romPath = pathname.replace('/roms/', '');
+      const filePath = join(process.cwd(), 'roms', `${romPath}.html`);
+      const content = await readFile(filePath, 'utf-8');
+      
+      return new Response(content, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-cache'
+        }
+      });
+    } catch (error) {
+      return new Response('ROM article not found', { status: 404 });
+    }
   }
   
   // Check if the pathname matches any redirect

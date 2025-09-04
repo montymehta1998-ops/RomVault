@@ -3,7 +3,7 @@
   "outputDirectory": "dist/public",
   "functions": {
     "api/**/*.ts": {
-      "includeFiles": "data/**,api/storage.ts,api/redirects-config.js"
+      "includeFiles": "data/**,articles/**,roms/**,api/storage.ts,api/redirects-config.ts"
     }
   },
   "rewrites": [
